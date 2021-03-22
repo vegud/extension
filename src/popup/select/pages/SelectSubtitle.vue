@@ -31,6 +31,9 @@ export default defineComponent({
     const navigationStore = useInjectStore('navigationStore');
     const videoStore = useInjectStore('videoStore');
     const selectStore = useInjectStore('selectStore');
+    const appStore = useInjectStore('appStore');
+    const subtitleStore = useInjectStore('subtitleStore');
+
     const url = new URL(window.location.href);
     const filtered = ref<string[]>([]);
 
@@ -46,8 +49,20 @@ export default defineComponent({
       videoCount: videoStore.getters.count,
       toSettings: navigationStore.actions.toSettings,
       filtered,
-      selectSubtitle: (entry) => {
-        console.warn('select'+entry);
+      selectSubtitle: async (entry) => {
+        appStore.actions.setState({ state: 'SELECTED' });
+        appStore.actions.setSrc({ src: 'SEARCH' });
+        selectStore.actions.download(entry).then((raw) => {
+          console.warn(raw);
+          subtitleStore.actions.setRaw({
+            raw,
+            format: '.srt',
+            id: entry,
+            language: "en"
+          });
+          subtitleStore.actions.parse();
+        });
+        navigationStore.actions.toHome({ contentTransitionName: 'content-navigate-select-to-home' });
       },
       backFn: (): void => {
         videoStore.actions.removeCurrent();

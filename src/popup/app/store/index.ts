@@ -4,7 +4,7 @@ export type AppState = {
   state: 'NONE' | 'SELECTED' | 'DOWNLOADING' | 'PARSING' | 'ERROR' | 'DONE';
   src: 'NONE' | 'FILE' | 'SEARCH';
 };
-
+// todo: simplfy for vegud
 export interface AppStore {
   state: ComputedRef<AppState>;
   actions: {

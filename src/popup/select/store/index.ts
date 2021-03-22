@@ -9,6 +9,7 @@ export interface SelectStore {
   state: ComputedRef<SelectState>;
   actions: {
     list: () => Promise<string[]>
+    download: (entry: string) => Promise<string>
   }
 }
 
@@ -25,6 +26,13 @@ export const init = ({ accessToken }: Pick<UnwrapRef<SelectState>, 'accessToken'
             Authorization: `${accessToken}`
           }
         }).then(r => r.json());
+      },
+      download: async (entry: string) => {
+        return fetch(`https://5m1ansbaba.execute-api.eu-west-1.amazonaws.com/get?key=${entry}`, {
+          headers: {
+            Authorization: `${accessToken}`
+          }
+        }).then(r => r.text());
       }
     }
   };

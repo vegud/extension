@@ -125,6 +125,7 @@ export const init = ({use}: InitPayload): SubtitleStore => {
           };
           use.appStore.actions.setState({ state: 'DONE' });
         } catch(e) {
+          console.warn(e);
           use.appStore.actions.setState({ state: 'ERROR' });
           throw new Error('parse error');
         }
