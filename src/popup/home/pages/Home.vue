@@ -6,16 +6,16 @@
       </a>
     </template>
     <template #content>
-      <div class="flex flex-wrap h-full home-content--container" :class="{ 'bg-surface-100': current === 'search-card' || current === 'file-card' }">
-        <ResultFromFile v-if="current === 'file-card'" class="m-2">
+      <div class="flex flex-wrap h-full home-content--container" :class="{ 'bg-surface-100': current === 'select-card' }">
+        <ResultFromSelect v-if="current === 'select-card'" class="m-2">
           <template #settings>
             <Settings>
               <template #info>
-                <FileInfo />
+                <div>nothing yet</div>
               </template>
             </Settings>
           </template>
-        </ResultFromFile>
+        </ResultFromSelect>
 
         <PageVideos v-else-if="current === 'page-videos'" class="w-full" />
 
@@ -37,8 +37,7 @@
 import { computed, defineComponent, PropType } from 'vue';
 
 import PageLayout from '@/components/PageLayout.vue';
-import ResultFromFile from '@/file/components/ResultFromFile.vue';
-import FileInfo from '@/file/components/FileInfo.vue';
+import ResultFromSelect from '@/select/components/ResultFromSelect.vue';
 import PageVideos from '@/video/components/PageVideos.vue';
 import Settings from '@/subtitle/components/Settings.vue';
 import { useInjectStore } from '@/composables/useInjectStore';
@@ -46,10 +45,9 @@ import { useInjectStore } from '@/composables/useInjectStore';
 export default defineComponent({
   components: {
     PageLayout,
-    ResultFromFile,
+    ResultFromSelect,
     PageVideos,
     Settings,
-    FileInfo
   },
   props: {
     contentTransitionName: {
@@ -67,10 +65,7 @@ export default defineComponent({
       toSettings: navigationStore.actions.toSettings,
       current: computed(() => {
         if (appStore.state.value.state !== 'NONE' && appStore.state.value.src === 'SEARCH') {
-          return 'search-card';
-        }
-        if (appStore.state.value.state !== 'NONE' && appStore.state.value.src === 'FILE') {
-          return 'file-card';
+          return 'select-card';
         }
         if (appStore.state.value.state === 'NONE') {
           return 'page-videos';
