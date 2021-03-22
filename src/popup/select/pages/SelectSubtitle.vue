@@ -42,10 +42,6 @@ export default defineComponent({
       filtered.value = list.filter(e => e.startsWith(`${prefix}/${videoId}`));
     });
 
-
-    console.warn(window.location.hostname === 'www.youtube.com');
-
-
     return {
       videoCount: videoStore.getters.count,
       toSettings: navigationStore.actions.toSettings,
