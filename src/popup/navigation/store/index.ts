@@ -1,15 +1,12 @@
 import {computed, ComputedRef, ref} from 'vue';
-import MovieTvSearch from "@/search/pages/movieTv/MovieTvSearch.vue";
-import SubtitleSearch from "@/search/pages/subtitle/SubtitleSearch.vue";
-import SubtitleSearchForMovies from "@/search/pages/subtitleForMovies/SubtitleSearchForMovies.vue";
-import SubtitleSearchForSeries from "@/search/pages/subtitleForSeries/SubtitleSearchForSeries.vue";
 import Transcript from "@/subtitle/pages/Transcript.vue";
 import Settings from "@/settings/pages/Settings.vue";
+import SelectSubtitle from "@/select/pages/SelectSubtitle.vue";
 import Home from "@/home/pages/Home.vue";
 import {ApiStore} from "@/api/store";
 
 export type NavigationState = {
-  name: 'HOME' | 'SETTINGS' | 'MOVIE-TV-SEARCH' | 'SUBTITLE-SEARCH-FOR-MOVIES' | 'SUBTITLE-SEARCH-FOR-SERIES' | 'TRANSCRIPT';
+  name: 'HOME' | 'SETTINGS' | 'TRANSCRIPT' | 'SELECT_SUBTITLE';
   params: any;
   component: any;
 };
@@ -22,22 +19,11 @@ export interface ToSettingsPayload {
   contentTransitionName: 'content-navigate-deeper';
 }
 
-export interface ToMovieTvSearchPayload {
-  contentTransitionName: 'content-navigate-deeper' | 'content-navigate-shallow';
-  query?: string;
-}
-
-export interface ToSubtitleSearchPayload {
-  tmdb_id: string;
-  media_type: string;
-  searchQuery: string;
+export interface ToTranscriptPayload {
   contentTransitionName: 'content-navigate-deeper';
 }
 
-export type ToSubtitleSearchForMoviesPayload = ToSubtitleSearchPayload
-export type ToSubtitleSearchForSeriesPayload = ToSubtitleSearchPayload
-
-export interface ToTranscriptPayload {
+export interface ToSelectSubtitlePayload {
   contentTransitionName: 'content-navigate-deeper';
 }
 
@@ -46,10 +32,8 @@ export interface NavigationStore {
   actions: {
     toHome: (params?: ToHomePayload) => void;
     toSettings: (params?: ToSettingsPayload) => void;
-    toMovieTvSearch: (params?: ToMovieTvSearchPayload) => void;
-    toSubtitleSearchForMovies: (params: ToSubtitleSearchForMoviesPayload) => void;
-    toSubtitleSearchForSeries: (params: ToSubtitleSearchForSeriesPayload) => void;
     toTranscript: (params?: ToTranscriptPayload) => void;
+    toSelectSubtitle: (params?: ToSelectSubtitlePayload) => void;
   };
 }
 
@@ -63,18 +47,12 @@ interface InitPayload {
 export const init = ({use}: InitPayload): NavigationStore => {
 
   const component = computed(() => {
-    if (state.value.name === 'MOVIE-TV-SEARCH') {
-      return MovieTvSearch;
-    } else if ((state.value.name === 'SUBTITLE-SEARCH-FOR-MOVIES' || state.value.name === 'SUBTITLE-SEARCH-FOR-SERIES') && use.apiStore.state.value.version === 'stable') {
-      return SubtitleSearch;
-    } else if (state.value.name === 'SUBTITLE-SEARCH-FOR-MOVIES' && use.apiStore.state.value.version === 'dev') {
-      return SubtitleSearchForMovies;
-    } else if (state.value.name === 'SUBTITLE-SEARCH-FOR-SERIES' && use.apiStore.state.value.version === 'dev') {
-      return SubtitleSearchForSeries;
-    } else if (state.value.name === 'TRANSCRIPT') {
+    if (state.value.name === 'TRANSCRIPT') {
       return Transcript;
     } else if (state.value.name === 'SETTINGS') {
       return Settings;
+    } else if (state.value.name === 'SELECT_SUBTITLE') {
+      return SelectSubtitle;
     } else {
       return Home;
     }
@@ -95,17 +73,11 @@ export const init = ({use}: InitPayload): NavigationStore => {
       toSettings: (params: ToSettingsPayload =  { contentTransitionName: 'content-navigate-deeper'}): void => {
         state.value = {name: 'SETTINGS', params, component};
       },
-      toMovieTvSearch: (params: ToMovieTvSearchPayload = {contentTransitionName: 'content-navigate-deeper'}): void => {
-        state.value = {name: 'MOVIE-TV-SEARCH', params, component};
-      },
-      toSubtitleSearchForMovies: (params: ToSubtitleSearchForMoviesPayload): void => {
-        state.value = {name: 'SUBTITLE-SEARCH-FOR-MOVIES', params, component};
-      },
-      toSubtitleSearchForSeries: (params: ToSubtitleSearchForSeriesPayload): void => {
-        state.value = {name: 'SUBTITLE-SEARCH-FOR-SERIES', params, component};
-      },
       toTranscript: (params: ToTranscriptPayload = {contentTransitionName: 'content-navigate-deeper'}): void => {
         state.value = {name: 'TRANSCRIPT', params, component};
+      },
+      toSelectSubtitle: (params: ToSelectSubtitlePayload = {contentTransitionName: 'content-navigate-deeper'}): void => {
+        state.value = {name: 'SELECT_SUBTITLE', params, component};
       }
     }
   };

@@ -7,17 +7,7 @@
     </template>
     <template #content>
       <div class="flex flex-wrap h-full home-content--container" :class="{ 'bg-surface-100': current === 'search-card' || current === 'file-card' }">
-        <ResultFromSearch v-if="current === 'search-card'" class="m-2">
-          <template #settings>
-            <Settings>
-              <template #info>
-                <SearchResultInfo/>
-              </template>
-            </Settings>
-          </template>
-        </ResultFromSearch>
-
-        <ResultFromFile v-else-if="current === 'file-card'" class="m-2">
+        <ResultFromFile v-if="current === 'file-card'" class="m-2">
           <template #settings>
             <Settings>
               <template #info>
@@ -30,22 +20,6 @@
         <PageVideos v-else-if="current === 'page-videos'" class="w-full" />
 
         <div class="text-xs w-full flex flex-wrap items-center self-end justify-center mb-1 gap-1">
-          <span>
-            <span class="pr-1">Subtitles by</span>
-            <a href="https://opensubtitles.org/" target="_blank" class="inline-flex gap-0.5 text-primary-500 hover:text-primary-700 hover:underline pr-1">
-              <span>OpenSubtitles</span>
-              <fa icon="external-link-alt" class="self-center h-icon-sm pb-1" />
-            </a>
-            <span>•</span>
-          </span>
-          <span>
-            <span class="pr-1">Movie infos by</span>
-            <a href="https://www.themoviedb.org/" target="_blank" class="inline-flex gap-0.5 text-primary-500 hover:text-primary-700 hover:underline pr-1">
-              <span>TMDb</span>
-              <fa icon="external-link-alt" class="self-center h-icon-sm pb-1" />
-            </a>
-            <span>•</span>
-          </span>
           <span>
             <span class="pr-1">Icons by</span>
             <a href="https://fontawesome.com/" target="_blank" class="inline-flex gap-0.5 text-primary-500 hover:text-primary-700 hover:underline">
@@ -63,19 +37,15 @@
 import { computed, defineComponent, PropType } from 'vue';
 
 import PageLayout from '@/components/PageLayout.vue';
-import ResultFromSearch from '@/search/components/ResultFromSearch.vue';
 import ResultFromFile from '@/file/components/ResultFromFile.vue';
 import FileInfo from '@/file/components/FileInfo.vue';
 import PageVideos from '@/video/components/PageVideos.vue';
 import Settings from '@/subtitle/components/Settings.vue';
 import { useInjectStore } from '@/composables/useInjectStore';
-import SearchResultInfo from "@/search/components/SearchResultInfo.vue";
 
 export default defineComponent({
   components: {
-    SearchResultInfo,
     PageLayout,
-    ResultFromSearch,
     ResultFromFile,
     PageVideos,
     Settings,

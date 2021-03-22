@@ -51,7 +51,7 @@ export default defineComponent({
       videoList: videoStore.getters.list,
       selectVideo: (video: Video) => {
         videoStore.actions.setCurrent({ video });
-        navigationStore.actions.toMovieTvSearch();
+        navigationStore.actions.toSelectSubtitle();
       }
     };
   }

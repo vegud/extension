@@ -1,19 +1,15 @@
 import { inject } from 'vue';
 import { AppStore } from '@/app/store';
-import { SearchStore } from '@/search/store';
 import { SubtitleStore } from '@/subtitle/store';
 import { VideoStore } from '@/video/store';
 import { NavigationStore } from '@/navigation/store';
 import { FileStore } from '@/file/store';
-import { TrackStore } from '@/track/store';
 import { ApiStore } from '@/api/store';
 import { AppearanceStore } from '@/appearance/store';
 
 type StoreKey = 'appStore' | 'searchStore' | 'subtitleStore' | 'videoStore' | 'navigationStore' | 'fileStore' | 'trackStore' | 'apiStore' | 'appearanceStore';
 type ReturnType<T extends StoreKey> = T extends 'appStore'
   ? AppStore
-  : T extends 'searchStore'
-  ? SearchStore
   : T extends 'subtitleStore'
   ? SubtitleStore
   : T extends 'videoStore'
@@ -22,8 +18,6 @@ type ReturnType<T extends StoreKey> = T extends 'appStore'
   ? NavigationStore
   : T extends 'fileStore'
   ? FileStore
-  : T extends 'trackStore'
-  ? TrackStore
   : T extends 'apiStore'
   ? ApiStore
   : T extends 'appearanceStore'

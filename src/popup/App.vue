@@ -11,17 +11,11 @@ import { init as initContentScriptStore } from '@/contentScript/store';
 import { init as initVideoStore } from '@/video/store';
 import { init as initFileStore } from '@/file/store';
 import { init as initSubtitleStore } from '@/subtitle/store';
-import { init as initSearchStore } from '@/search/store';
 import { init as initNavigationStore } from '@/navigation/store';
 import { init as initApiStore } from '@/api/store';
-import { init as initTrackStore } from '@/track/store';
 import { init as initAppearanceStore } from '@/appearance/store';
 
 import Home from '@/home/pages/Home.vue';
-import MovieTvSearch from '@/search/pages/movieTv/MovieTvSearch.vue';
-import SubtitleSearch from '@/search/pages/subtitle/SubtitleSearch.vue';
-import SubtitleSearchForMovies from '@/search/pages/subtitleForMovies/SubtitleSearchForMovies.vue';
-import SubtitleSearchForSeries from '@/search/pages/subtitleForSeries/SubtitleSearchForSeries.vue';
 import Transcript from '@/subtitle/pages/Transcript.vue';
 import Settings from '@/settings/pages/Settings.vue';
 import '@/styles.css';
@@ -31,10 +25,6 @@ import { Subject } from 'rxjs';
 export default defineComponent({
   components: {
     Home,
-    MovieTvSearch,
-    SubtitleSearch,
-    SubtitleSearchForMovies,
-    SubtitleSearchForSeries,
     Transcript,
     Settings
   },
@@ -66,10 +56,6 @@ export default defineComponent({
     provide('videoStore', videoStore);
     const fileStore = initFileStore();
     provide('fileStore', fileStore);
-    const searchStore = initSearchStore({ preferredLanguage: props.preferredLanguage });
-    provide('searchStore', searchStore);
-    const trackStore = initTrackStore();
-    provide('trackStore', trackStore);
     const appearanceStore = initAppearanceStore({ use: { contentScriptStore }, initStyle: props.style });
     provide('appearanceStore', appearanceStore);
 
@@ -87,7 +73,6 @@ export default defineComponent({
         if (video === null) {
           appStore.actions.reset();
           subtitleStore.actions.reset();
-          searchStore.actions.reset();
           fileStore.actions.reset();
         }
       }
@@ -110,15 +95,14 @@ export default defineComponent({
     watch(
       [videoStore.getters.count, appStore.state, videoStore.getters.list, videoStore.getters.current],
       ([videoCount, appState, videoList], [prevVideoCount, prevAppState, prevVideoList]) => {
+
         // navigate if only 1 video exists
         if (videoCount === 1 && videoList[0] && navigationStore.state.value.name === 'HOME' && appState.state === 'NONE') {
           videoStore.actions.setCurrent({ video: videoList[0] });
-          navigationStore.actions.toMovieTvSearch();
+          navigationStore.actions.toSelectSubtitle();
           return;
         }
-
-        // navigate to selection if additional videos appear
-        if (videoCount > 1 && prevVideoCount === 1 && navigationStore.state.value.name === 'MOVIE-TV-SEARCH' && appState.state === 'NONE') {
+        if (videoCount > 1 && prevVideoCount === 1 && navigationStore.state.value.name === 'SELECT_SUBTITLE' && appState.state === 'NONE') {
           videoStore.actions.removeCurrent();
           navigationStore.actions.toHome();
           return;
