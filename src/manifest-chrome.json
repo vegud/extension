@@ -36,6 +36,8 @@
     "extension_pages": "script-src 'self'; object-src 'self'"
   },
   "permissions": [
+    "identity",
+    "https://vegud.auth.eu-west-1.amazoncognito.com/*",
     "scripting",
     "storage",
     "activeTab"

@@ -23,7 +23,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType } from 'vue';
+import { defineComponent, PropType } from 'vue';
 import { clear as storageClear } from 'storage';
 
 import PageLayout from '@/components/PageLayout.vue';
@@ -41,22 +41,12 @@ export default defineComponent({
     }
   },
   setup() {
-    const apiStore = useInjectStore('apiStore');
     const navigationStore = useInjectStore('navigationStore');
     const videoStore = useInjectStore('videoStore');
 
     return {
-      apiVersion: computed({
-        get() {
-          return apiStore.state.value.version;
-        },
-        set(version: 'stable' | 'dev') {
-          apiStore.actions.setVersion({ version });
-        }
-      }),
       clearUserData: async () => {
         await storageClear();
-        apiStore.actions.setVersion({ version: 'stable' });
       },
       backFn: () => (videoStore.getters.count.value === 1 ? navigationStore.actions.toSelectSubtitle() : navigationStore.actions.toHome())
     };

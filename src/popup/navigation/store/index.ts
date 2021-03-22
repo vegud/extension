@@ -3,7 +3,6 @@ import Transcript from "@/subtitle/pages/Transcript.vue";
 import Settings from "@/settings/pages/Settings.vue";
 import SelectSubtitle from "@/select/pages/SelectSubtitle.vue";
 import Home from "@/home/pages/Home.vue";
-import {ApiStore} from "@/api/store";
 
 export type NavigationState = {
   name: 'HOME' | 'SETTINGS' | 'TRANSCRIPT' | 'SELECT_SUBTITLE';
@@ -37,14 +36,8 @@ export interface NavigationStore {
   };
 }
 
-interface InitPayload {
-  use: {
-    apiStore: ApiStore
-  }
-}
 
-
-export const init = ({use}: InitPayload): NavigationStore => {
+export const init = (): NavigationStore => {
 
   const component = computed(() => {
     if (state.value.name === 'TRANSCRIPT') {

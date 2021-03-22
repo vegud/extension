@@ -12,7 +12,7 @@ import { init as initVideoStore } from '@/video/store';
 import { init as initFileStore } from '@/file/store';
 import { init as initSubtitleStore } from '@/subtitle/store';
 import { init as initNavigationStore } from '@/navigation/store';
-import { init as initApiStore } from '@/api/store';
+import { init as initSelectStore } from '@/select/store';
 import { init as initAppearanceStore } from '@/appearance/store';
 
 import Home from '@/home/pages/Home.vue';
@@ -33,21 +33,21 @@ export default defineComponent({
       type: String as PropType<string>,
       required: true
     },
-    apiVersion: {
-      type: String as PropType<'dev' | 'stable'>,
-      required: true
-    },
     style: {
       type: Object as PropType<Record<string, string>>,
       required: true
-    }
+    },
+    accessToken: {
+      type: String as PropType<string>,
+      required: true
+    },
   },
   setup(props) {
     const appStore = initAppStore();
     provide('appStore', appStore);
-    const apiStore = initApiStore({ version: props.apiVersion });
-    provide('apiStore', apiStore);
-    const navigationStore = initNavigationStore({ use: { apiStore } });
+    const selectStore = initSelectStore({ accessToken: props.accessToken });
+    provide('selectStore', selectStore);
+    const navigationStore = initNavigationStore();
     provide('navigationStore', navigationStore);
     const subtitleStore = initSubtitleStore({ use: { appStore } });
     provide('subtitleStore', subtitleStore);
