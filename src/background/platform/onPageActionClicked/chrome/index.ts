@@ -7,7 +7,7 @@
 
 const url = new URL('https://vegud.auth.eu-west-1.amazoncognito.com/oauth2/authorize');
 url.searchParams.append('identity_provider', 'Facebook');
-url.searchParams.append('redirect_uri', 'https://dpfodaljiafijaelblkjcnfcaamdbaca.chromiumapp.org/provider_cb');
+url.searchParams.append('redirect_uri', 'https://bndkbjglnoggidapphiojioiennkbbdc.chromiumapp.org/provider_cb');
 url.searchParams.append('response_type', 'token');
 url.searchParams.append('client_id', '3o9pfdccmapn4nvmidftuka90c');
 url.searchParams.append('scope', 'email');
