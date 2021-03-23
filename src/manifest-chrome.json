@@ -1,6 +1,6 @@
 {
   "name": "Vegud Extension",
-  "version": "5.0.6",
+  "version": "5.0.7",
   "manifest_version": 3,
   "description": "Load subtitle to a HTML5 video.",
   "author": "Stefan Breitenstein",
