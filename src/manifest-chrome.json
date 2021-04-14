@@ -1,6 +1,6 @@
 {
   "name": "Vegud",
-  "version": "5.0.8",
+  "version": "5.0.9",
   "manifest_version": 3,
   "description": "Designed for Subtitles. Make watching  a great experience.",
   "author": "Stefan Breitenstein",
@@ -9,8 +9,7 @@
     "48": "res/icons/vegud48.png",
     "128": "res/icons/vegud128.png"
   },
-  "action": {
-  },
+  "action": {},
   "content_scripts": [
     {
       "matches": [
