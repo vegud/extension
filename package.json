@@ -1,7 +1,7 @@
 {
-  "name": "vegud-extension",
-  "version": "5.0.7",
-  "description": "Chrome extension which adds subtitle to html5 videos",
+  "name": "vegud",
+  "version": "5.0.8",
+  "description": "Designed for Subtitles. Make watching  a great experience.",
   "author": "Stefan Breitenstein",
   "scripts": {
     "eslint": "eslint . --ext .ts",

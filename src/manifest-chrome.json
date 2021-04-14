@@ -1,20 +1,16 @@
 {
-  "name": "Vegud Extension",
-  "version": "5.0.7",
+  "name": "Vegud",
+  "version": "5.0.8",
   "manifest_version": 3,
-  "description": "Load subtitle to a HTML5 video.",
+  "description": "Designed for Subtitles. Make watching  a great experience.",
   "author": "Stefan Breitenstein",
   "icons": {
-    "16": "res/icons/plussub16.png",
-    "48": "res/icons/plussub48.png",
-    "128": "res/icons/plussub128.png"
+    "16": "res/icons/vegud16.png",
+    "48": "res/icons/vegud48.png",
+    "128": "res/icons/vegud128.png"
   },
   "action": {
-    "default_icon": {
-      "19": "res/icons/browseraction.png"
-    }
   },
-  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA05hn5/5h02XpxlhskN4nnTY4J9DXWfTxZcX2bv+8duta0CmxVUA9daodBysSikxQjT5rTSr+Z2HxTo+wJvOj4jMOFug7Y0+UKPKAmYID7CHZfKd1tnwkwjOO3n3XrRsNxlV9l/OgBVbMMaQpmNkQZGnGmMTLEpCxEHtqnik9s3E9wVDoCQY0pMX4A1LZKbJdmztfRCoiwyQ92qO2elDAE8EB7SbWnUfye93IkPmn+DvV+ToaU3olCZtHq1XmQmFPFoKDrQguzmViIP2mQlfsDY9WVS6qZwxBOac3RjiyIokJ10Z9265mrrb2LB75rnKtV0hLryc4+VAmObZjmsJaAwIDAQAB",
   "content_scripts": [
     {
       "matches": [
