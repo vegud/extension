@@ -3,18 +3,21 @@
 const path = require('path');
 const { VueLoaderPlugin } = require('vue-loader');
 const CopyPlugin = require('copy-webpack-plugin');
-const webpack = require('webpack')
+const webpack = require('webpack');
 
 module.exports = (env, argv) => {
   const browser = (argv.browser ? argv.browser.toLowerCase() : 'unknown').trim();
   if (browser !== 'chrome' && browser !== 'firefox') {
     throw new Error(`unknown browser: ${browser}`);
   }
-
   return {
     devtool: false,
-    mode: argv.mode ? argv.mode : 'development',
-    entry: { popup: './popup/index.ts', background: './background/index.ts', contentScript: './contentScript/index.ts' },
+    mode: argv.mode ?? 'development',
+    entry: {
+      popup: './popup/index.ts',
+      background: './background/index.ts',
+      contentScript: './contentScript/index.ts'
+    },
     context: path.resolve(__dirname, 'src'),
     output: {
       filename: '[name].js',
@@ -99,7 +102,18 @@ module.exports = (env, argv) => {
       new VueLoaderPlugin(),
       new CopyPlugin({
         patterns: [
-          { from: `manifest-${browser}.json`, to: 'manifest.json' },
+          {
+            from: `manifest-${browser}.json`,
+            to: 'manifest.json',
+            transform(manifest) {
+              return argv.add_manifest_key
+                ? JSON.stringify({
+                  ...JSON.parse(manifest.toString()),
+                  key: 'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAr6+PlzeOK4z+p7QL/4NxAHoS6rhnNasLef6Dg6hp8E2/YQvKozVU4CFXnUR5sSmqJsVr8818+Q3vX4+zJbTa9S430HtudSqYGtpUyLzQTKmIGudXu/xNBS1cDRSEGqI+hKQBn3drNAd3zAnx8dHJBzUV5G6yJns2jYJ7GDFcDAK0N7C+F0WFPWCBhKAxH7/VRqzFiehP0Wr0NJN3hC2qX4KuJgiiAi0haeJ7ZmIWGCDgWM9zW6C2pPTdPbmVMQKvIKJzdKcj1CCVYrph0nqxNsDhhPxNd9HXshxquvskmQAdwcfW8kcWtU7/84Ib/+AvTLeVaXL3lmffZUnNOLfQKwIDAQAB'
+                }, null, 2)
+                : manifest;
+            }
+          },
           { from: 'res', to: 'res' },
           { from: 'popup/font.css', to: 'font.css' },
           { from: 'contentScript/contentScript.css', to: 'contentScript.css' }

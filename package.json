@@ -5,7 +5,7 @@
   "author": "Stefan Breitenstein",
   "scripts": {
     "eslint": "eslint . --ext .ts",
-    "start:chrome": "webpack --browser=chrome --watch",
+    "start:chrome": "webpack --browser=chrome --add_manifest_key --watch",
     "build:chrome": "webpack --browser=chrome --mode=production",
     "start:firefox": "webpack --browser=firefox --watch",
     "build:firefox": "export NODE_ENV=production && webpack --browser=firefox --mode=production",

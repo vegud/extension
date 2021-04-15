@@ -9,7 +9,11 @@
     "48": "res/icons/vegud48.png",
     "128": "res/icons/vegud128.png"
   },
-  "action": {},
+  "action": {
+    "default_icon": {
+      "16": "res/icons/vegud16.png"
+    }
+  },
   "content_scripts": [
     {
       "matches": [

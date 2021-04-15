@@ -7,7 +7,7 @@
 
 const url = new URL('https://vegud.auth.eu-west-1.amazoncognito.com/oauth2/authorize');
 url.searchParams.append('identity_provider', 'Facebook');
-url.searchParams.append('redirect_uri', 'https://bndkbjglnoggidapphiojioiennkbbdc.chromiumapp.org/provider_cb');
+url.searchParams.append('redirect_uri', 'https://lodkihmjefnchnabpmjifgcacncllkil.chromiumapp.org/provider_cb');
 url.searchParams.append('response_type', 'token');
 url.searchParams.append('client_id', '3o9pfdccmapn4nvmidftuka90c');
 url.searchParams.append('scope', 'email');
@@ -43,13 +43,19 @@ const auth = async (): Promise<{accessToken: string}> => {
 };
 
 chrome.action.onClicked.addListener(async (tab) => {
+  console.warn('####');
   if (!tab.id) {
     console.warn('missing tab id');
     return;
   }
-  const {accessToken} = await auth();
-  await chrome.storage.sync.set({accessToken});
-
+  try{
+    const {accessToken} = await auth();
+    await chrome.storage.sync.set({accessToken});
+  }
+  catch (e) {
+    console.warn(e);
+    throw e;
+  }
   try {
     await chrome.scripting.insertCSS({ files: ['./font.css'], target: { allFrames: false, tabId: tab.id } });
     console.warn('insert done');
