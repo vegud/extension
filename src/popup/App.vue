@@ -21,6 +21,7 @@ import Settings from '@/settings/pages/Settings.vue';
 import '@/styles.css';
 import { filter, takeUntil, tap } from 'rxjs/operators';
 import { Subject } from 'rxjs';
+import { close } from '@/components/Toolbar/close';
 
 export default defineComponent({
   components: {
@@ -71,6 +72,7 @@ export default defineComponent({
       }
     });
 
+    document.onfullscreenchange = () => close();
 
     const unmountSubject = new Subject<undefined>();
     contentScriptStore.actions.requestAllContentScriptsToRegister();
