@@ -59,6 +59,19 @@ export default defineComponent({
     const appearanceStore = initAppearanceStore({ use: { contentScriptStore }, initStyle: props.style });
     provide('appearanceStore', appearanceStore);
 
+    //detect youtube video change:
+    window.document.addEventListener('transitionend', (e: TransitionEvent) =>  {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      if (e.target?.id === 'progress'){
+          appStore.actions.reset();
+          fileStore.actions.reset();
+          subtitleStore.actions.reset();
+          videoStore.actions.removeCurrent();
+      }
+    });
+
+
     const unmountSubject = new Subject<undefined>();
     contentScriptStore.actions.requestAllContentScriptsToRegister();
     contentScriptStore.state.messageObservable.pipe(

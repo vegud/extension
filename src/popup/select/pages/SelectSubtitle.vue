@@ -1,7 +1,9 @@
 <template>
   <PageLayout :content-transition-name='contentTransitionName' :has-back='videoCount > 1' :back-fn='backFn'>
     <template #content>
-      <div v-if='isYoutube && entries.length > 0'>
+      <div v-if='loading'>
+      </div>
+      <div v-else-if='isYoutube && entries.length > 0'>
         <div v-for='(entry, index) in entries' :key='index'
              class='hover:cursor-pointer hover:bg-primary-700 hover:text-on-primary-700 py-2 px-2'
              @click='selectSubtitle(entry.path)'>
@@ -53,10 +55,11 @@ export default defineComponent({
 
     const url = new URL(window.location.href);
     const entries = ref<Entry[]>([]);
+    const loading = ref<boolean>(true);
 
     const prefix = url.hostname === 'www.youtube.com' ? 'yt' : '<unknown>';
     const videoId = url.searchParams.get('v') ?? '';
-    console.warn(prefix);
+
     onMounted(async () => {
       const list = await selectStore.actions.list();
       entries.value = list
@@ -71,9 +74,11 @@ export default defineComponent({
             path
           };
         });
+      loading.value = false;
     });
 
     return {
+      loading,
       videoCount: videoStore.getters.count,
       toSettings: navigationStore.actions.toSettings,
       entries,
@@ -82,7 +87,6 @@ export default defineComponent({
         appStore.actions.setState({ state: 'SELECTED' });
         appStore.actions.setSrc({ src: 'SEARCH' });
         selectStore.actions.download(entry).then((raw) => {
-          console.warn(raw);
           subtitleStore.actions.setRaw({
             raw,
             format: '.srt',
