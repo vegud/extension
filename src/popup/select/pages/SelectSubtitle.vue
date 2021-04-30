@@ -1,10 +1,19 @@
 <template>
   <PageLayout :content-transition-name='contentTransitionName' :has-back='videoCount > 1' :back-fn='backFn'>
     <template #content>
-      <div v-for='(entry, index) in filtered' :key='index'
-           class='hover:cursor-pointer hover:bg-primary-700 hover:text-on-primary-700'
-           @click="selectSubtitle(entry)" >
-        {{ entry }}
+      <div v-if='isYoutube && entries.length > 0'>
+        <div v-for='(entry, index) in entries' :key='index'
+             class='hover:cursor-pointer hover:bg-primary-700 hover:text-on-primary-700 py-2 px-2'
+             @click='selectSubtitle(entry.path)'>
+          <h3 class="text-lg py-2">{{ entry.language }}</h3>
+          <div class="px-2">{{ entry.name }}</div>
+        </div>
+      </div>
+      <div v-else-if='isYoutube && entries.length === 0' class="flex justify-center items-center	h-full">
+        <span>Sorry, no subtitles found for the video.</span>
+      </div>
+      <div v-else class="flex justify-center items-center	h-full">
+        <span>Sorry, currently only youtube is supported.</span>
       </div>
     </template>
   </PageLayout>
@@ -12,9 +21,17 @@
 
 <script lang='ts'>
 
-import { defineComponent, onMounted, PropType, ref } from 'vue';
+import { computed, defineComponent, onMounted, PropType, ref } from 'vue';
 import PageLayout from '@/components/PageLayout.vue';
 import { useInjectStore } from '@/composables/useInjectStore';
+
+interface Entry {
+  provider: string;
+  id: string;
+  language: string;
+  name: string;
+  path: string;
+}
 
 export default defineComponent({
   components: {
@@ -35,20 +52,32 @@ export default defineComponent({
     const subtitleStore = useInjectStore('subtitleStore');
 
     const url = new URL(window.location.href);
-    const filtered = ref<string[]>([]);
+    const entries = ref<Entry[]>([]);
 
     const prefix = url.hostname === 'www.youtube.com' ? 'yt' : '<unknown>';
     const videoId = url.searchParams.get('v') ?? '';
-
+    console.warn(prefix);
     onMounted(async () => {
       const list = await selectStore.actions.list();
-      filtered.value = list.filter(e => e.startsWith(`${prefix}/${videoId}`));
+      entries.value = list
+        .filter(e => e.startsWith(`${prefix}/${videoId}`))
+        .map(path => {
+          const [provider, id, language, name] = path.split('/');
+          return {
+            provider,
+            id,
+            language,
+            name,
+            path
+          };
+        });
     });
 
     return {
       videoCount: videoStore.getters.count,
       toSettings: navigationStore.actions.toSettings,
-      filtered,
+      entries,
+      isYoutube: computed(() => prefix === 'yt'),
       selectSubtitle: async (entry) => {
         appStore.actions.setState({ state: 'SELECTED' });
         appStore.actions.setSrc({ src: 'SEARCH' });
@@ -58,7 +87,7 @@ export default defineComponent({
             raw,
             format: '.srt',
             id: entry,
-            language: "en"
+            language: 'en'
           });
           subtitleStore.actions.parse();
         });
