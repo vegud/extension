@@ -18,16 +18,7 @@
         </ResultFromSelect>
 
         <PageVideos v-else-if="current === 'page-videos'" class="w-full" />
-
-        <div class="text-xs w-full flex flex-wrap items-center self-end justify-center mb-1 gap-1">
-          <span>
-            <span class="pr-1">Icons by</span>
-            <a href="https://fontawesome.com/" target="_blank" class="inline-flex gap-0.5 text-primary-500 hover:text-primary-700 hover:underline">
-              <span>Font Awesome</span>
-              <fa icon="external-link-alt" class="self-center h-icon-sm pb-1" />
-            </a>
-          </span>
-        </div>
+        <Mention/>
       </div>
     </template>
   </PageLayout>
@@ -41,6 +32,7 @@ import ResultFromSelect from '@/select/components/ResultFromSelect.vue';
 import PageVideos from '@/video/components/PageVideos.vue';
 import Settings from '@/subtitle/components/Settings.vue';
 import { useInjectStore } from '@/composables/useInjectStore';
+import Mention from "@/home/components/Mention.vue";
 
 export default defineComponent({
   components: {
@@ -48,6 +40,7 @@ export default defineComponent({
     ResultFromSelect,
     PageVideos,
     Settings,
+    Mention
   },
   props: {
     contentTransitionName: {
