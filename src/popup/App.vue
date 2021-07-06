@@ -14,6 +14,7 @@ import { init as initSubtitleStore } from '@/subtitle/store';
 import { init as initNavigationStore } from '@/navigation/store';
 import { init as initSelectStore } from '@/select/store';
 import { init as initAppearanceStore } from '@/appearance/store';
+import { init as initLoginStore } from '@/login/store';
 
 import Home from '@/home/pages/Home.vue';
 import Transcript from '@/subtitle/pages/Transcript.vue';
@@ -37,16 +38,14 @@ export default defineComponent({
     style: {
       type: Object as PropType<Record<string, string>>,
       required: true
-    },
-    accessToken: {
-      type: String as PropType<string>,
-      required: true
-    },
+    }
   },
   setup(props) {
     const appStore = initAppStore();
     provide('appStore', appStore);
-    const selectStore = initSelectStore({ accessToken: props.accessToken });
+    const loginStore = initLoginStore();
+    provide('loginStore', loginStore);
+    const selectStore = initSelectStore({ loginStore });
     provide('selectStore', selectStore);
     const navigationStore = initNavigationStore();
     provide('navigationStore', navigationStore);
@@ -61,14 +60,14 @@ export default defineComponent({
     provide('appearanceStore', appearanceStore);
 
     //detect youtube video change:
-    window.document.addEventListener('transitionend', (e: TransitionEvent) =>  {
+    window.document.addEventListener('transitionend', (e: TransitionEvent) => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      if (e.target?.id === 'progress'){
-          appStore.actions.reset();
-          fileStore.actions.reset();
-          subtitleStore.actions.reset();
-          videoStore.actions.removeCurrent();
+      if (e.target?.id === 'progress') {
+        appStore.actions.reset();
+        fileStore.actions.reset();
+        subtitleStore.actions.reset();
+        videoStore.actions.removeCurrent();
       }
     });
 
@@ -108,9 +107,12 @@ export default defineComponent({
     onUnmounted(() => unmountSubject.next(undefined));
 
     watch(
-      [videoStore.getters.count, appStore.state, videoStore.getters.list, videoStore.getters.current],
-      ([videoCount, appState, videoList], [prevVideoCount, prevAppState, prevVideoList]) => {
-
+      [loginStore.getters.loggedIn, videoStore.getters.count, appStore.state, videoStore.getters.list, videoStore.getters.current],
+      ([loggedIn, videoCount, appState, videoList], [_, prevVideoCount]) => {
+        if (!loggedIn) {
+          navigationStore.actions.toLogin();
+          return;
+        }
         // navigate if only 1 video exists
         if (videoCount === 1 && videoList[0] && navigationStore.state.value.name === 'HOME' && appState.state === 'NONE') {
           videoStore.actions.setCurrent({ video: videoList[0] });

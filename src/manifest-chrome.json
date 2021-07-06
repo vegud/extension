@@ -37,9 +37,15 @@
   },
   "permissions": [
     "identity",
-    "https://vegud.auth.eu-west-1.amazoncognito.com/*",
     "scripting",
     "storage",
     "activeTab"
+  ],
+  "host_permissions": [
+    "https://vegud.auth.eu-west-1.amazoncognito.com/*",
+    "https://vegud2.auth.eu-west-1.amazoncognito.com/*",
+    "https://vegud2.auth.eu-west-1.amazoncognito.com/logout",
+    "https://vegud2.auth.eu-west-1.amazoncognito.com/login",
+    "https://vegud2.auth.eu-west-1.amazoncognito.com/oauth2/authorize"
   ]
 }

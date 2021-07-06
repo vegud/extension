@@ -5,56 +5,41 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 
-const url = new URL('https://vegud.auth.eu-west-1.amazoncognito.com/oauth2/authorize');
+const url = new URL('https://vegud2.auth.eu-west-1.amazoncognito.com/oauth2/authorize');
 url.searchParams.append('identity_provider', 'Facebook');
 url.searchParams.append('redirect_uri', 'https://lodkihmjefnchnabpmjifgcacncllkil.chromiumapp.org/provider_cb');
 url.searchParams.append('response_type', 'token');
-url.searchParams.append('client_id', '3o9pfdccmapn4nvmidftuka90c');
+url.searchParams.append('client_id', '76mptk4ppgstrrcknkhh8a1htf');
 url.searchParams.append('scope', 'email');
 
-const auth = async (): Promise<{accessToken: string}> => {
-  return new Promise((resolve, reject) => {
-    chrome.identity.launchWebAuthFlow({
-      'interactive': true,
-      url: url.toString()
-    }, async (redirectUri) => {
+
+type AuthResult = {redirectUri: string} | {error: string};
+
+const auth = async (): Promise<AuthResult> => {
+  console.warn('auth!');
+  return new Promise((resolve) => {
+    chrome.identity.launchWebAuthFlow({ interactive: true, url: url.toString() }, async (redirectUri) => {
       if (chrome.runtime.lastError) {
         console.warn(chrome.runtime.lastError.message);
-        reject(chrome.runtime.lastError);
+        resolve({error: chrome.runtime.lastError.message ?? 'unknown error'});
         return;
       }
+      console.warn('wohu!');
+      console.warn(redirectUri);
 
       if (!redirectUri) {
-        reject(new Error('missing redirectUri'));
+        resolve({error: 'missing redirectUri'});
         return;
       }
-
-      const urlHash = new URL(redirectUri).hash.slice(1);
-      const hashParams = new URLSearchParams(urlHash);
-      const accessToken = hashParams.get('access_token');
-
-      if (!accessToken) {
-        reject(new Error('missing accessToken'));
-        return;
-      }
-      resolve({ accessToken });
+      resolve({redirectUri});
     });
   });
 };
 
 chrome.action.onClicked.addListener(async (tab) => {
-  console.warn('####');
   if (!tab.id) {
     console.warn('missing tab id');
     return;
-  }
-  try{
-    const {accessToken} = await auth();
-    await chrome.storage.sync.set({accessToken});
-  }
-  catch (e) {
-    console.warn(e);
-    throw e;
   }
   try {
     await chrome.scripting.insertCSS({ files: ['./font.css'], target: { allFrames: false, tabId: tab.id } });
@@ -75,5 +60,12 @@ chrome.action.onClicked.addListener(async (tab) => {
     });
   } catch (e) {
     console.warn('insert script failed', e);
+  }
+});
+
+chrome.runtime.onMessage.addListener( (message, sender, sendResponse) => {
+  if (message === 'auth') {
+    auth().then(r => sendResponse(r));
+    return true;
   }
 });

@@ -9,8 +9,8 @@ export const init = async (): Promise<void> => {
   if (document.getElementById('plusSubShadow')) {
     document.documentElement.style.setProperty('--plusSub-shadow-top', `${window.scrollY + 30}px`)
   } else {
-    const {preferredLanguage, style, accessToken} = await storageGet(['preferredLanguage', 'api', 'style', 'accessToken']);
-    app = createApp(appComponent, {preferredLanguage: preferredLanguage ?? 'en', style: style ?? {}, accessToken}).component('fa', FontAwesomeIcon);
+    const {preferredLanguage, style} = await storageGet(['preferredLanguage', 'api', 'style']);
+    app = createApp(appComponent, {preferredLanguage: preferredLanguage ?? 'en', style: style ?? {}}).component('fa', FontAwesomeIcon);
     document.documentElement.style.setProperty('--plusSub-shadow-top', `${window.scrollY + 30}px`);
 
     const appShadowDiv = document.createElement('div');

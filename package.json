@@ -5,7 +5,7 @@
   "author": "Stefan Breitenstein",
   "scripts": {
     "eslint": "eslint . --ext .ts",
-    "start:chrome": "webpack --env browser=chrome --watch",
+    "start:chrome": "webpack --env browser=chrome --watch --env add_manifest_key=true",
     "build:chrome": "webpack --env browser=chrome --env mode=production",
     "start:firefox": "webpack --env browser=firefox --watch",
     "build:firefox": "export NODE_ENV=production && webpack --env browser=firefox --env mode=production",
@@ -59,7 +59,7 @@
     "tailwindcss": "^2.0.1",
     "ts-jest": "^27.0.3",
     "ts-loader": "^9.2.3",
-    "typescript": "^4.2.2",
+    "typescript": "^4.3.5",
     "url-loader": "^4.1.1",
     "vue-loader": "^16.1.1",
     "web-ext": "^6.1.0",

@@ -1,12 +1,6 @@
-import { computed, ComputedRef, ref, UnwrapRef } from 'vue';
-
-export interface SelectState {
-  accessToken: string;
-}
-
+import { LoginStore } from '@/login/store';
 
 export interface SelectStore {
-  state: ComputedRef<SelectState>;
   actions: {
     list: () => Promise<string[]>
     download: (entry: string) => Promise<string>
@@ -14,25 +8,22 @@ export interface SelectStore {
 }
 
 
-export const init = ({ accessToken }: Pick<UnwrapRef<SelectState>, 'accessToken'>): SelectStore => {
-  const state = ref<SelectState>({ accessToken });
-
+export const init = ({ loginStore }: { loginStore: LoginStore }): SelectStore => {
   return {
-    state: computed(() => state.value),
     actions: {
       list: async () => {
-        return fetch(`https://5m1ansbaba.execute-api.eu-west-1.amazonaws.com/list`, {
+        return fetch(`https://c1szga65f2.execute-api.eu-west-1.amazonaws.com/list`, {
           headers: {
-            Authorization: `${accessToken}`
+            Authorization: `${loginStore.getters.accessToken.value}`
           }
-        }).then(r => r.json());
+        }).then((r) => r.json());
       },
       download: async (entry: string) => {
-        return fetch(`https://5m1ansbaba.execute-api.eu-west-1.amazonaws.com/get?key=${entry}`, {
+        return fetch(`https://c1szga65f2.execute-api.eu-west-1.amazonaws.com/get?key=${entry}`, {
           headers: {
-            Authorization: `${accessToken}`
+            Authorization: `${loginStore.getters.accessToken.value}`
           }
-        }).then(r => r.text());
+        }).then((r) => r.text());
       }
     }
   };

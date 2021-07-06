@@ -2,10 +2,11 @@ import {computed, ComputedRef, ref} from 'vue';
 import Transcript from "@/subtitle/pages/Transcript.vue";
 import Settings from "@/settings/pages/Settings.vue";
 import SelectSubtitle from "@/select/pages/SelectSubtitle.vue";
+import Login from "@/login/pages/Login.vue";
 import Home from "@/home/pages/Home.vue";
 
 export type NavigationState = {
-  name: 'HOME' | 'SETTINGS' | 'TRANSCRIPT' | 'SELECT_SUBTITLE';
+  name: 'HOME' | 'SETTINGS' | 'TRANSCRIPT' | 'SELECT_SUBTITLE' | 'LOGIN';
   params: any;
   component: any;
 };
@@ -26,6 +27,10 @@ export interface ToSelectSubtitlePayload {
   contentTransitionName: 'content-navigate-deeper';
 }
 
+export interface ToLoginPayload {
+  contentTransitionName: 'content-navigate-deeper';
+}
+
 export interface NavigationStore {
   state: ComputedRef<NavigationState>;
   actions: {
@@ -33,6 +38,7 @@ export interface NavigationStore {
     toSettings: (params?: ToSettingsPayload) => void;
     toTranscript: (params?: ToTranscriptPayload) => void;
     toSelectSubtitle: (params?: ToSelectSubtitlePayload) => void;
+    toLogin: (params?: ToLoginPayload) => void;
   };
 }
 
@@ -46,6 +52,8 @@ export const init = (): NavigationStore => {
       return Settings;
     } else if (state.value.name === 'SELECT_SUBTITLE') {
       return SelectSubtitle;
+    } else if (state.value.name === 'LOGIN') {
+      return Login;
     } else {
       return Home;
     }
@@ -71,6 +79,9 @@ export const init = (): NavigationStore => {
       },
       toSelectSubtitle: (params: ToSelectSubtitlePayload = {contentTransitionName: 'content-navigate-deeper'}): void => {
         state.value = {name: 'SELECT_SUBTITLE', params, component};
+      },
+      toLogin: (params: ToSelectSubtitlePayload = {contentTransitionName: 'content-navigate-deeper'}): void => {
+        state.value = {name: 'LOGIN', params, component};
       }
     }
   };
