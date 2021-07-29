@@ -31,8 +31,6 @@ export const init = (): LoginStore => {
   const initialized = ref(false);
 
   storageGet(['authorization']).then(async ({authorization}) => {
-
-    console.warn(authorization);
     if(!authorization){
       window.plusSub_login.value.loggedIn = false;
       window.plusSub_login.value.authToken = null;
@@ -68,15 +66,11 @@ export const init = (): LoginStore => {
           }
         }).then(r => r.json());
         if (loginResponse.status === 'success') {
-
           await storageSet({authorization});
           window.plusSub_login.value = {
             loggedIn: true,
             authToken: authorization
           };
-
-          console.warn('###');
-          console.warn(window.plusSub_login.value.loggedIn);
         }
         return loginResponse;
       },
