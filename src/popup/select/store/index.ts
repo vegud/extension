@@ -13,15 +13,17 @@ export const init = ({ loginStore }: { loginStore: LoginStore }): SelectStore =>
     actions: {
       list: async () => {
         return fetch(`https://c1szga65f2.execute-api.eu-west-1.amazonaws.com/list`, {
+          method: 'POST',
           headers: {
-            Authorization: `${loginStore.getters.accessToken.value}`
+            authorization: loginStore.getters.login.value?.authToken ?? ''
           }
         }).then((r) => r.json());
       },
       download: async (entry: string) => {
         return fetch(`https://c1szga65f2.execute-api.eu-west-1.amazonaws.com/get?key=${entry}`, {
+          method: 'POST',
           headers: {
-            Authorization: `${loginStore.getters.accessToken.value}`
+            authorization: loginStore.getters.login.value?.authToken ?? ''
           }
         }).then((r) => r.text());
       }

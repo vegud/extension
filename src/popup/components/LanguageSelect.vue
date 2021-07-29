@@ -19,8 +19,8 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref } from 'vue';
-import { default as Select } from '@/components/Select.vue';
+import { computed, defineComponent, PropType } from 'vue';
+import Select from '@/components/Select.vue';
 import { capitalizeFirst } from '@/util/string';
 import languageList from '@/res/iso639List.json';
 

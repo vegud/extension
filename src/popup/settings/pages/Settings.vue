@@ -43,10 +43,12 @@ export default defineComponent({
   setup() {
     const navigationStore = useInjectStore('navigationStore');
     const videoStore = useInjectStore('videoStore');
+    const loginStore = useInjectStore('loginStore');
 
     return {
       clearUserData: async () => {
         await storageClear();
+        loginStore.actions.logout();
       },
       backFn: () => (videoStore.getters.count.value === 1 ? navigationStore.actions.toSelectSubtitle() : navigationStore.actions.toHome())
     };

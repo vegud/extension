@@ -1,9 +1,9 @@
 import { computed, ComputedRef, Ref, ref } from 'vue';
+import { get as storageGet, set as storageSet } from 'storage';
 
 interface LoginState {
-  accessToken: string | null;
+  authToken: string | null;
   loggedIn: boolean;
-  lastError: string | null;
 }
 
 declare global {
@@ -14,77 +14,83 @@ declare global {
 
 export interface LoginStore {
   actions: {
-    logIn: () => Promise<boolean>;
+    signIn: (payload: {mail: string, pw: string}) => Promise<{status: 'success'|'error', message: string}>;
+    logout: () => Promise<void>;
   },
   getters: {
-    accessToken: ComputedRef<string|null>;
-    loggedIn: ComputedRef<boolean>;
-    lastError: ComputedRef<string|null>;
+    login: ComputedRef<LoginState | null>;
+    initialized: ComputedRef<boolean>;
   }
 }
-
-type AuthResult = {redirectUri: string} | {error: string};
-
-const sendAuthRequestToBackgroundScript = (): Promise<AuthResult> =>
-  new Promise((resolve) =>
-    chrome.runtime.sendMessage('auth', (response) => resolve(response)));
-
-const isError = (auth: AuthResult): auth is {error: string} => typeof auth['error'] !== 'undefined';
 
 export const init = (): LoginStore => {
   window.plusSub_login = window.plusSub_login ? ref(window.plusSub_login.value) : ref<LoginState>({
     loggedIn: false,
-    accessToken: null,
-    lastError: null
+    authToken: null
+  });
+  const initialized = ref(false);
+
+  storageGet(['authorization']).then(async ({authorization}) => {
+
+    console.warn(authorization);
+    if(!authorization){
+      window.plusSub_login.value.loggedIn = false;
+      window.plusSub_login.value.authToken = null;
+      initialized.value = true;
+      return;
+    }
+
+      const loginResponse = await fetch(`https://c1szga65f2.execute-api.eu-west-1.amazonaws.com/login`, {
+        method: 'POST',
+        headers: {
+          authorization
+        }
+      }).then(r => r.json());
+
+      window.plusSub_login.value = {
+        loggedIn: loginResponse.status === 'success',
+        authToken: loginResponse.status === 'success' ? authorization : null
+      };
+      initialized.value = true;
   });
 
-  const reset = ({error}: {error: string | null}) => {
-    window.plusSub_login.value.loggedIn = false;
-    window.plusSub_login.value.accessToken = null;
-    window.plusSub_login.value.lastError = error;
-  }
-
-  const successful = ({accessToken}: {accessToken: string}) => {
-    window.plusSub_login.value.accessToken = accessToken;
-    window.plusSub_login.value.loggedIn = true;
-    window.plusSub_login.value.lastError = null;
-  }
-
-  const logIn = async () => {
-    const result = await sendAuthRequestToBackgroundScript();
-    if(isError(result)){
-      reset({error: result.error});
-      return false;
-    }
-
-    const urlHash = new URL(result.redirectUri).hash.slice(1);
-    const hashParams = new URLSearchParams(urlHash);
-    const notRegistered = hashParams.get('error_description')?.trim() === 'PreAuthentication failed with error User not found.';
-    if(notRegistered){
-      reset({error: 'NOT_REGISTERED'});
-      return false;
-    }
-    const accessToken = hashParams.get('access_token');
-    if (!accessToken) {
-      reset({error: 'MISSING_ACCESS_TOKEN'});
-      return false;
-    }
-    successful({accessToken});
-    return true;
-  }
-
-  if(!window.plusSub_login.value.loggedIn) {
-    void logIn();
-  }
+  const utf8ToBase64 =  str => window.btoa(unescape(encodeURIComponent( str )));
 
   return {
     actions: {
-      logIn
+      signIn: async ({mail, pw}: {mail: string, pw: string}): Promise<{status: 'success'|'error', message: string}> => {
+        const authorization = utf8ToBase64(`${mail} ${pw}`);
+
+        const loginResponse = await fetch(`https://c1szga65f2.execute-api.eu-west-1.amazonaws.com/login`, {
+          method: 'POST',
+          headers: {
+            authorization
+          }
+        }).then(r => r.json());
+        if (loginResponse.status === 'success') {
+
+          await storageSet({authorization});
+          window.plusSub_login.value = {
+            loggedIn: true,
+            authToken: authorization
+          };
+
+          console.warn('###');
+          console.warn(window.plusSub_login.value.loggedIn);
+        }
+        return loginResponse;
+      },
+      logout: async () => {
+        window.plusSub_login.value = {
+          loggedIn: false,
+          authToken: null
+        };
+        await storageSet({authorization: null});
+      }
     },
     getters: {
-      loggedIn: computed(() => window.plusSub_login.value.loggedIn),
-      accessToken: computed(() => window.plusSub_login.value.accessToken),
-      lastError: computed(() => window.plusSub_login.value.lastError)
+      login: computed(() => window.plusSub_login.value),
+      initialized: computed(() => initialized.value)
     }
   };
 };

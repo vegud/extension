@@ -8,7 +8,7 @@
         style="grid-area: bar"
         :placeholder="placeholder"
         v-bind="$attrs"
-        type="text"
+        type="password"
         @input="$emit('update:modelValue', $event.target.value)"
         @keydown.stop
         @keypress.stop

@@ -3,7 +3,7 @@
     <a v-if="hasBack" style="grid-area: logo" @click="backFn ? backFn() : toHome()">
       <fa icon="chevron-left" class="h-full py-2 pl-1 hover:text-on-primary-hover-500" />
     </a>
-    <div v-else>
+    <div v-else class="p-1">
       <logo style="grid-area: logo" class="h-full w-full" />
     </div>
 

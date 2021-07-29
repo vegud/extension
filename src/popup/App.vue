@@ -1,6 +1,7 @@
 <template>
   <div class="h-auto overflow-hidden grid app--container">
-    <component :is="navigationState.component" v-bind="navigationState.params" />
+    <component v-if='initialized' :is="navigationState.component" v-bind="navigationState.params" />
+    <Loading v-else/>
   </div>
 </template>
 
@@ -17,6 +18,7 @@ import { init as initAppearanceStore } from '@/appearance/store';
 import { init as initLoginStore } from '@/login/store';
 
 import Home from '@/home/pages/Home.vue';
+import Loading from '@/loading/pages/Loading.vue';
 import Transcript from '@/subtitle/pages/Transcript.vue';
 import Settings from '@/settings/pages/Settings.vue';
 import '@/styles.css';
@@ -26,6 +28,7 @@ import { close } from '@/components/Toolbar/close';
 
 export default defineComponent({
   components: {
+    Loading,
     Home,
     Transcript,
     Settings
@@ -107,9 +110,12 @@ export default defineComponent({
     onUnmounted(() => unmountSubject.next(undefined));
 
     watch(
-      [loginStore.getters.loggedIn, videoStore.getters.count, appStore.state, videoStore.getters.list, videoStore.getters.current],
-      ([loggedIn, videoCount, appState, videoList], [_, prevVideoCount]) => {
-        if (!loggedIn) {
+      [loginStore.getters.initialized, loginStore.getters.login, videoStore.getters.count, appStore.state, videoStore.getters.list, videoStore.getters.current],
+      ([initialized, login, videoCount, appState, videoList], [_, __, prevVideoCount]) => {
+        if(!initialized){
+          return;
+        }
+        if (!login?.loggedIn) {
           navigationStore.actions.toLogin();
           return;
         }
@@ -134,7 +140,8 @@ export default defineComponent({
     );
 
     return {
-      navigationState: navigationStore.state
+      navigationState: navigationStore.state,
+      initialized: loginStore.getters.initialized
     };
   }
 });

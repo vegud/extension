@@ -55,7 +55,7 @@ module.exports = {
     },
     colors: {
       white: colors.white,
-      primary: colors.cyan,
+      primary: colors.purple,
       'on-primary': {
         500: '#ffffff',
         600: '#ffffff',
@@ -64,7 +64,18 @@ module.exports = {
       'on-primary-hover': {
         500: colors.blueGray['700']
       },
-      surface: colors.coolGray,
+      surface: {
+        50: '#ffffff',
+        100: '#ffffff',
+        200: '#ffffff',
+        300: '#ffffff',
+        400: '#ffffff',
+        500: '#ffffff',
+        600: '#ffffff',
+        700: '#ffffff',
+        800: '#ffffff',
+        900: '#ffffff'
+      },
       'on-surface': {
         50: colors.blueGray['700']
       },
@@ -75,7 +86,12 @@ module.exports = {
       'error-icon': colors.red['600'],
       'on-error': colors.blueGray['700'],
 
-      'destructive-icon': colors.red['600']
+      'destructive-icon': colors.red['600'],
+
+      'brand-fb': {
+        default: '#4267B2',
+        hover: '#455d89'
+      }
     },
     extend: {
       fontFamily: {
