@@ -9,10 +9,6 @@
       <div class="w-full h-full grid relative justify-center search-content--container">
         <div style="grid-area: search-bar" class="pt-3 pb-2 bg-primary-100">
           <LanguageSelect v-model:selected="language" v-model:show="showLanguageSelection"></LanguageSelect>
-
-          <div class="w-full mt-2">
-            <InputField v-model="filter" placeholder="Filter subtitles" placeholder-icon="filter" class="px-2" />
-          </div>
           <div v-show="matchingSubtitle" class="px-5 mt-2 leading-normal text-sm flex">
             <div class="italic pr-2">Matching subtitle</div>
             <a class="relative text-primary-700 hover:underline italic" @click="selectSubtitle(matchingSubtitle?.path)">{{ matchingSubtitle?.name }}</a>
@@ -58,6 +54,7 @@ import Divider from '@/components/Divider.vue';
 import LoadingBar from '@/components/LoadingBar.vue';
 import InputField from '@/components/InputField.vue';
 import { useInjectStore } from '@/composables/useInjectStore';
+import { get as storageGet, set as storageSet } from 'storage';
 
 interface Entry {
   provider: string;
@@ -97,9 +94,28 @@ export default defineComponent({
     const loading = ref<boolean>(true);
 
     const prefix = url.hostname === 'www.youtube.com' ? 'yt' : '<unknown>';
+    const language = ref({
+      iso639_2: 'fr',
+      iso639Name: 'French'
+    });
+
+    watch(language, (selectLanguage) => storageSet({ selectLanguage }));
+
+    const storageGetOrDefault = async (key, defaultValue) => {
+      const value = (await storageGet([key]));
+      if(!value || !Object.keys(value).length){
+        return {
+          [key]: defaultValue
+        };
+      }
+      return value;
+    }
 
     onMounted(async () => {
       const list = await selectStore.actions.list();
+      const { selectLanguage } = await storageGetOrDefault('selectLanguage', language.value);
+      language.value = selectLanguage;
+
       entries.value = sort(
         list
           .filter((e) => e.startsWith(`${prefix}/`))
@@ -124,11 +140,6 @@ export default defineComponent({
       );
 
       loading.value = false;
-    });
-
-    const language = ref({
-      iso639_2: 'fr',
-      iso639Name: 'French'
     });
 
     const entriesInCurrentLanguage = computed(() => entries.value.filter((e) => e.language?.toLowerCase() === language.value.iso639_2));
