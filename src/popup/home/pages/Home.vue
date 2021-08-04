@@ -1,8 +1,8 @@
 <template>
   <PageLayout :content-transition-name="contentTransitionName">
     <template #toolbar>
-      <a class="self-center pr-4" @click="toSettings()">
-        <fa icon="cog" class="h-icon hover:text-on-primary-hover-500"></fa>
+      <a class="self-center pr-4" @click="signOut()">
+        <fa icon="sign-out-alt" class="h-icon hover:text-on-primary-hover-500"></fa>
       </a>
     </template>
     <template #content>
@@ -51,11 +51,11 @@ export default defineComponent({
   },
   setup() {
     const appStore = useInjectStore('appStore');
-    const navigationStore = useInjectStore('navigationStore');
+    const loginStore = useInjectStore('loginStore');
 
     return {
       appState: appStore.state,
-      toSettings: navigationStore.actions.toSettings,
+      signOut: loginStore.actions.signOut,
       current: computed(() => {
         if (appStore.state.value.state !== 'NONE' && appStore.state.value.src === 'SEARCH') {
           return 'select-card';
@@ -74,20 +74,5 @@ export default defineComponent({
 .home-content--container {
   min-height: 300px;
   max-height: 720px;
-}
-
-.home-content--container-old {
-  overflow-y: scroll;
-  width: 100%;
-  height: 100%;
-  display: grid;
-  justify-content: center;
-  grid-template-areas:
-    'current-sub'
-    'videos'
-    'contribution';
-  grid-template-rows: auto 1fr auto;
-  grid-template-columns: 1fr;
-  row-gap: 16px;
 }
 </style>

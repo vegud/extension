@@ -48,7 +48,7 @@ export default defineComponent({
     return {
       clearUserData: async () => {
         await storageClear();
-        loginStore.actions.logout();
+        loginStore.actions.signOut();
       },
       backFn: () => (videoStore.getters.count.value === 1 ? navigationStore.actions.toSelectSubtitle() : navigationStore.actions.toHome())
     };

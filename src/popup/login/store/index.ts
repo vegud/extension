@@ -15,7 +15,7 @@ declare global {
 export interface LoginStore {
   actions: {
     signIn: (payload: {mail: string, pw: string}) => Promise<{status: 'success'|'error', message: string}>;
-    logout: () => Promise<void>;
+    signOut: () => Promise<void>;
   },
   getters: {
     login: ComputedRef<LoginState | null>;
@@ -74,7 +74,7 @@ export const init = (): LoginStore => {
         }
         return loginResponse;
       },
-      logout: async () => {
+      signOut: async () => {
         window.plusSub_login.value = {
           loggedIn: false,
           authToken: null

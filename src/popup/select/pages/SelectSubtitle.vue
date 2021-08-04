@@ -1,8 +1,8 @@
 <template>
   <PageLayout :content-transition-name="contentTransitionName" :has-back="videoCount > 1" :back-fn="backFn">
     <template #toolbar>
-      <a class="self-center pr-4" @click="toSettings()">
-        <fa icon="cog" class="h-icon hover:text-on-primary-hover-500"></fa>
+      <a class="self-center pr-4" @click="signOut()">
+        <fa icon="sign-out-alt" class="h-icon hover:text-on-primary-hover-500"></fa>
       </a>
     </template>
     <template #content>
@@ -22,18 +22,29 @@
           <LoadingBar :loading="loading" class="w-full" />
         </div>
 
-        <div v-if="entriesInCurrentLanguage.length" class="overflow-y-auto" style="grid-area: search-results">
-          <div v-for="(entry, index) in entriesInCurrentLanguage" :key="index"  @click='selectSubtitle(entry.path)'>
+        <div v-if="entriesInCurrentLanguageUniqueName.length" class="overflow-y-auto" style="grid-area: search-results">
+          <div v-for="(entry, index) in entriesInCurrentLanguageUniqueName" :key="index">
             <Divider v-if="index === 0" style="grid-column: 1/3" class="border-surface-200" />
-            <h3 class="text-lg py-2 px-2 hover:bg-primary-200">{{ entry.name }}</h3>
+            <h3 class="text-lg py-2 px-2">{{ entry.name }}</h3>
+            <details v-if="entriesInCurrentLanguageGroupByName.get(entry.name).length > 1" class="py-2 px-4">
+              <summary class="cursor-pointer hover:text-primary-700">Episodes</summary>
+              <div
+                v-for="(episodeEntry, index) in entriesInCurrentLanguageGroupByName.get(entry.name)"
+                :key="index"
+                class="hover:bg-primary-200 px-6 py-2 cursor-pointer"
+                :class="{ 'pt-3': index === 0 }"
+                @click="selectSubtitle(episodeEntry.path)"
+              >
+                Episode {{ episodeEntry.episode }}
+              </div>
+            </details>
             <Divider style="grid-column: 1/3" class="border-surface-200" />
           </div>
         </div>
         <div v-else-if="isYoutube && entriesInCurrentLanguage.length === 0 && !loading" class="flex justify-center items-center h-full">
           <span>Sorry, no subtitles found in this language.</span>
         </div>
-        <div v-else class="flex justify-center items-center h-full">
-        </div>
+        <div v-else class="flex justify-center items-center h-full"></div>
       </div>
     </template>
   </PageLayout>
@@ -56,6 +67,8 @@ interface Entry {
   path: string;
 }
 
+const sort = (arr, comp) => [...arr].sort(comp);
+
 export default defineComponent({
   components: {
     PageLayout,
@@ -77,6 +90,7 @@ export default defineComponent({
     const selectStore = useInjectStore('selectStore');
     const appStore = useInjectStore('appStore');
     const subtitleStore = useInjectStore('subtitleStore');
+    const loginStore = useInjectStore('loginStore');
 
     const url = new URL(window.location.href);
     const entries = ref<Entry[]>([]);
@@ -86,18 +100,29 @@ export default defineComponent({
 
     onMounted(async () => {
       const list = await selectStore.actions.list();
-      entries.value = list
-        // .filter((e) => e.startsWith(`${prefix}/${videoId}`))
-        .map((path) => {
-          const [provider, id, language, name] = path.split('/');
-          return {
-            provider,
-            id,
-            language,
-            name,
-            path
-          };
-        });
+      entries.value = sort(
+        list
+          .filter((e) => e.startsWith(`${prefix}/`))
+          .map((path) => {
+            const [provider, id, language, filename] = path.split('/');
+
+            const splitByUnderscore = filename?.replace('.srt', '')?.split('_') ?? [];
+            const episode = splitByUnderscore[splitByUnderscore.length - 1];
+            const name = splitByUnderscore.slice(0, splitByUnderscore.length - 1).join(' ');
+            return {
+              provider,
+              id,
+              language: language?.toLowerCase(),
+              filename,
+              name,
+              episode,
+              path
+            };
+          })
+          .filter((e) => e.name),
+        (a, b) => a.name.localeCompare(b.name)
+      );
+
       loading.value = false;
     });
 
@@ -109,16 +134,32 @@ export default defineComponent({
     const entriesInCurrentLanguage = computed(() => entries.value.filter((e) => e.language?.toLowerCase() === language.value.iso639_2));
     const isYoutube = computed(() => prefix === 'yt');
 
+    const entriesInCurrentLanguageGroupByName = computed(() =>
+      entriesInCurrentLanguage.value.reduce(
+        (map, entry) =>
+          map.set(
+            entry.name,
+            sort([...(map.get(entry.name) ?? []), entry], (a, b) => a.episode.localeCompare(b.episode))
+          ),
+        new Map()
+      )
+    );
+
+    const entriesInCurrentLanguageUniqueName = computed(() => [...entriesInCurrentLanguageGroupByName.value.values()].reduce((acc, cur) => [...acc, cur[0]], []));
+
     return {
       loading,
-      toSettings: navigationStore.actions.toSettings,
+      signOut: loginStore.actions.signOut,
       videoCount: videoStore.getters.count,
       entries,
 
       showLanguageSelection: ref(false),
       language,
       entriesInCurrentLanguage,
-      matchingSubtitle:  computed(() => entriesInCurrentLanguage.value.find((e) => isYoutube.value && e.id && e.id === url.searchParams.get('v') )),
+      entriesInCurrentLanguageGroupByName,
+      entriesInCurrentLanguageUniqueName,
+      matchingSubtitle: computed(() => entriesInCurrentLanguage.value.find((e) => isYoutube.value && e.id && e.id === url.searchParams.get('v'))),
+
       isYoutube,
       selectSubtitle: async (entry) => {
         appStore.actions.setState({ state: 'SELECTED' });

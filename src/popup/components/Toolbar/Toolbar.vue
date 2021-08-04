@@ -13,7 +13,7 @@
 
     <div style="grid-area: close" class="flex items-center mr-3">
       <a @click="close">
-        <fa icon="times" class="h-icon hover:text-on-primary-hover-500" />
+        <fa icon="window-minimize" class="h-icon hover:text-on-primary-hover-500" />
       </a>
     </div>
   </div>
