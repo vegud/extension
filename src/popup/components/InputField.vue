@@ -13,7 +13,7 @@
         @keydown.stop
         @keypress.stop
     />
-    <div v-if="withClear" class="justify-self-end self-center mr-2 text" style="grid-area: bar">
+    <div class="justify-self-end self-center mr-2 text" style="grid-area: bar">
       <fa v-if="modelValue || placeholderIcon === ''" icon="times" class="h-icon-sm hover:cursor-pointer hover:text-destructive-icon" @click="clear" />
       <fa v-else :icon="placeholderIcon" class="h-icon-sm" />
     </div>
@@ -38,11 +38,6 @@ export default defineComponent({
       type: String as PropType<string>,
       required: false,
       default: ''
-    },
-    withClear: {
-      type: Boolean as PropType<boolean>,
-      required: false,
-      default: true
     }
   },
   emits: ['update:modelValue'],

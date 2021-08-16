@@ -2,7 +2,7 @@
   <Select
     :selected="selected"
     :show="show"
-    :options="languageList"
+    :options="entries"
     filter-placeholder="Filter languages"
     :filter-fn="filter"
     class="px-2 mt-2"
@@ -10,10 +10,10 @@
     @update:show="$emit('update:show', $event)"
   >
     <template #currentSelected>
-      <span>Subtitle language: {{ pretty }}</span>
+      <span>{{ (selected?.name) }}</span>
     </template>
     <template #default="slotProps">
-      <span>{{ slotProps.item.iso639Name }} ({{ slotProps.item.iso639_2 }})</span>
+      <span>{{ slotProps.item.name }}</span>
     </template>
   </Select>
 </template>
@@ -22,9 +22,15 @@
 import { computed, defineComponent, PropType } from 'vue';
 import Select from '@/components/Select.vue';
 import { capitalizeFirst } from '@/util/string';
-import languageListAll from '@/res/iso639List.json';
+import languageList from '@/res/iso639List.json';
 
-const languageList = languageListAll.filter(({ iso639_2 }) => ['ar', 'fr', 'en', 'fr', 'de', 'de', 'es', 'it'].includes(iso639_2));
+interface Entry {
+  provider: string;
+  id: string;
+  language: string;
+  name: string;
+  path: string;
+}
 
 export default defineComponent({
   components: {
@@ -32,7 +38,11 @@ export default defineComponent({
   },
   props: {
     selected: {
-      type: Object as PropType<{ iso639_2: string; iso639Name: string }>,
+      type: Object as PropType<Entry>,
+      required: true
+    },
+    entries: {
+      type: Array as PropType<Entry[]>,
       required: true
     },
     show: {
@@ -44,12 +54,11 @@ export default defineComponent({
   emits: ['update:selected', 'update:show'],
   setup(props) {
     return {
-      languageList,
       filter: (query: string) => {
-        const lowerCaseQuery = query.toLowerCase();
-        return languageList.filter(({ iso639Name, iso639_2 }) => iso639Name.toLowerCase().startsWith(query) || iso639_2.toLowerCase().startsWith(lowerCaseQuery));
-      },
-      pretty: computed(() => capitalizeFirst(props.selected.iso639_2))
+        return props.entries;
+        // const lowerCaseQuery = query.toLowerCase();
+        // return languageList.filter(({ iso639Name, iso639_2 }) => iso639Name.toLowerCase().startsWith(query) || iso639_2.toLowerCase().startsWith(lowerCaseQuery));
+      }
     };
   }
 });

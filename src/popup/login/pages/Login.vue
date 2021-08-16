@@ -4,11 +4,11 @@
       <div class="grid login-container pt-3">
         <div style="grid-area: mail" class="flex flex-col">
           <div class="text-xs">Mail</div>
-          <InputField v-model="mail" placeholder="Mail" :with-clear="false" class="mt-0.5" @keyup.enter="() => pwInput?.input?.focus()"/>
+          <InputField v-model="mail" placeholder="Mail" class="mt-0.5" @keyup.enter="() => pwInput?.input?.focus()"/>
         </div>
         <div style="grid-area: pw" class="mt-2 flex flex-col">
           <div class="text-xs">Password</div>
-          <PasswordInputField ref="pwInput" v-model="pw" placeholder="Password" :with-clear="false" class="mt-0.5" @keyup.enter="signIn({ mail, pw })"/>
+          <PasswordInputField ref="pwInput" v-model="pw" placeholder="Password" class="mt-0.5" @keyup.enter="signIn({ mail, pw })"/>
         </div>
 
         <div style="grid-area: sign-in" class="flex items-center justify-center bg-primary-500 hover:bg-primary-700 rounded h-10 mt-5 cursor-pointer" @click="signIn({ mail, pw })">

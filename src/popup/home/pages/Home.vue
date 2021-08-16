@@ -7,7 +7,7 @@
     </template>
     <template #content>
       <div class="flex flex-wrap h-full home-content--container" :class="{ 'bg-surface-100': current === 'select-card' }">
-        <ResultFromSelect v-if="current === 'select-card'" class="m-2">
+        <ResultFromSelectSubtitle v-if="current === 'select-card'" class="m-2">
           <template #settings>
             <Settings>
               <template #info>
@@ -15,7 +15,7 @@
               </template>
             </Settings>
           </template>
-        </ResultFromSelect>
+        </ResultFromSelectSubtitle>
 
         <PageVideos v-else-if="current === 'page-videos'" class="w-full" />
         <Mention/>
@@ -28,7 +28,7 @@
 import { computed, defineComponent, PropType } from 'vue';
 
 import PageLayout from '@/components/PageLayout.vue';
-import ResultFromSelect from '@/select/components/ResultFromSelect.vue';
+import ResultFromSelectSubtitle from '@/selectSubtitle/components/ResultFromSelectSubtitle.vue';
 import PageVideos from '@/video/components/PageVideos.vue';
 import Settings from '@/subtitle/components/Settings.vue';
 import { useInjectStore } from '@/composables/useInjectStore';
@@ -37,7 +37,7 @@ import Mention from "@/home/components/Mention.vue";
 export default defineComponent({
   components: {
     PageLayout,
-    ResultFromSelect,
+    ResultFromSelectSubtitle,
     PageVideos,
     Settings,
     Mention

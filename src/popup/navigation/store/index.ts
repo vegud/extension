@@ -1,7 +1,7 @@
 import {computed, ComputedRef, ref} from 'vue';
 import Transcript from "@/subtitle/pages/Transcript.vue";
 import Settings from "@/settings/pages/Settings.vue";
-import SelectSubtitle from "@/select/pages/SelectSubtitle.vue";
+import SelectSubtitle from "@/selectSubtitle/pages/SelectSubtitle.vue";
 import Login from "@/login/pages/Login.vue";
 import Home from "@/home/pages/Home.vue";
 

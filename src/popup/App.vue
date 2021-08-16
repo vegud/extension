@@ -13,7 +13,7 @@ import { init as initVideoStore } from '@/video/store';
 import { init as initFileStore } from '@/file/store';
 import { init as initSubtitleStore } from '@/subtitle/store';
 import { init as initNavigationStore } from '@/navigation/store';
-import { init as initSelectStore } from '@/select/store';
+import { init as initSelectStore } from '@/selectSubtitle/store';
 import { init as initAppearanceStore } from '@/appearance/store';
 import { init as initLoginStore } from '@/login/store';
 
@@ -48,8 +48,8 @@ export default defineComponent({
     provide('appStore', appStore);
     const loginStore = initLoginStore();
     provide('loginStore', loginStore);
-    const selectStore = initSelectStore({ loginStore });
-    provide('selectStore', selectStore);
+    const selectSubtitleStore = initSelectStore({ loginStore });
+    provide('selectSubtitleStore', selectSubtitleStore);
     const navigationStore = initNavigationStore();
     provide('navigationStore', navigationStore);
     const subtitleStore = initSubtitleStore({ use: { appStore } });

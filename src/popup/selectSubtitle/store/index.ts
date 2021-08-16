@@ -1,6 +1,6 @@
 import { LoginStore } from '@/login/store';
 
-export interface SelectStore {
+export interface SelectSubtitleStore {
   actions: {
     list: () => Promise<string[]>
     download: (entry: string) => Promise<string>
@@ -8,7 +8,7 @@ export interface SelectStore {
 }
 
 
-export const init = ({ loginStore }: { loginStore: LoginStore }): SelectStore => {
+export const init = ({ loginStore }: { loginStore: LoginStore }): SelectSubtitleStore => {
   return {
     actions: {
       list: async () => {

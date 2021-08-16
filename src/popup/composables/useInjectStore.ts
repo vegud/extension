@@ -4,11 +4,11 @@ import { SubtitleStore } from '@/subtitle/store';
 import { VideoStore } from '@/video/store';
 import { NavigationStore } from '@/navigation/store';
 import { FileStore } from '@/file/store';
-import { SelectStore } from '@/select/store';
+import { SelectSubtitleStore } from '@/selectSubtitle/store';
 import { AppearanceStore } from '@/appearance/store';
 import { LoginStore } from '@/login/store';
 
-type StoreKey = 'appStore' | 'subtitleStore' | 'videoStore' | 'navigationStore' | 'fileStore' | 'selectStore' | 'appearanceStore' | 'loginStore';
+type StoreKey = 'appStore' | 'subtitleStore' | 'videoStore' | 'navigationStore' | 'fileStore' | 'selectSubtitleStore' | 'appearanceStore' | 'loginStore';
 type ReturnType<T extends StoreKey> = T extends 'appStore'
   ? AppStore
   : T extends 'subtitleStore'
@@ -19,8 +19,8 @@ type ReturnType<T extends StoreKey> = T extends 'appStore'
   ? NavigationStore
   : T extends 'fileStore'
   ? FileStore
-  : T extends 'selectStore'
-  ? SelectStore
+  : T extends 'selectSubtitleStore'
+  ? SelectSubtitleStore
   : T extends 'appearanceStore'
   ? AppearanceStore
   : T extends 'loginStore'

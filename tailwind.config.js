@@ -57,6 +57,7 @@ module.exports = {
       white: colors.white,
       primary: colors.purple,
       'on-primary': {
+        400: '#ffffff',
         500: '#ffffff',
         600: '#ffffff',
         700: '#ffffff'
