@@ -2,7 +2,9 @@ export interface Entry {
   provider: string;
   id: string;
   language: string;
+  filename: string;
   name: string;
+  episode: string;
   path: string;
 }
 

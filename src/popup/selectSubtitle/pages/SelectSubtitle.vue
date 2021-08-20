@@ -6,28 +6,32 @@
       </a>
     </template>
     <template #content>
-      <div class="flex mt-2 mx-2 gap-1">
-        <div class="rounded-t-lg w-full cursor-pointer text-center h-8" :class="{ 'bg-primary-400': tab === 'pick', 'bg-primary-200': tab !== 'pick' }" @click="tab = 'pick'">
-          <div class="mt-2" :class="{ 'text-on-primary-400': tab === 'pick', 'text-on-primary-200': tab !== 'pick' }">Pick</div>
-        </div>
-        <div class="rounded-t-lg w-full cursor-pointer text-center h-8 relative" :class="{ 'bg-primary-400': tab === 'select', 'bg-primary-200': tab !== 'select' }" @click="tab = 'select'">
-          <div class="mt-2" :class="{ 'text-on-primary-400': tab === 'select', 'text-on-primary-200': tab !== 'select' }">Detect</div>
-          <span class="flex h-3 w-3 absolute right-1.5 top-1.5">
-            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-800 opacity-75"></span>
-            <span class="relative inline-flex rounded-full h-3 w-3 bg-primary-800"></span>
-          </span>
-        </div>
-      </div>
+      <div class="relative bg-surface-50 w-full grid rounded-lg shadow-lg border border-primary-700 m-2" style="width: calc(100% - 16px)">
+        <div class="flex justify-around relative mt-1">
+          <PrefixIconButton icon="search" icon-size="large" class="py-3" :class="{ 'border-b-2': tab === 'pick', 'text-primary-700': tab === 'pick'}" @click="tab = 'pick'">
+            <template #label>
+              <span>Pick</span>
+            </template>
+          </PrefixIconButton>
 
-      <div class="bg-primary-100 mx-2 h-px">
-        <LoadingBar v-if="loading" :loading="loading" class="w-full" />
-      </div>
+          <PrefixIconButton icon="magic" icon-size="large" class="py-3" :class="{ 'border-b-2': tab === 'detect', 'text-primary-700': tab === 'detect' }" @click="tab = 'detect'">
+            <template #label>
+              <span>Detect</span>
+              <span v-if="isMatchingSubtitleInCurrentLanguage" class="flex h-3 w-3 absolute right-9 top-2">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-800 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-3 w-3 bg-primary-800"></span>
+               </span>
+            </template>
+          </PrefixIconButton>
+        </div>
 
-      <div v-if="tab === 'pick'" class="mx-2">
-        <PickSeries :entries="entries" v-model:language="language" @select="selectSubtitle"></PickSeries>
-      </div>
-      <div v-else class="mx-2">
-        <DetectSubtitle :entries="entries" v-model:language="language" @select="selectSubtitle"></DetectSubtitle>
+        <div class="bg-primary-100 mx-2 h-px">
+          <LoadingBar v-if="loading" :loading="loading" class="w-full" />
+        </div>
+        <div class="mx-9 mt-2">
+          <PickSeries v-if="tab === 'pick'" :entries="entries" v-model:language="language" @select="selectSubtitle"></PickSeries>
+          <DetectSubtitle v-else :entries="entries" v-model:language="language" @select="selectSubtitle"></DetectSubtitle>
+        </div>
       </div>
     </template>
   </PageLayout>
@@ -35,10 +39,11 @@
 
 <script lang="ts">
 import PageLayout from '@/components/PageLayout.vue';
-import { defineComponent, onMounted, PropType, ref, watch } from 'vue';
+import { computed, defineComponent, onMounted, PropType, ref, watch } from 'vue';
 import { useInjectStore } from '@/composables/useInjectStore';
 import PickSeries from '@/selectSubtitle/components/PickSeries.vue';
 import DetectSubtitle from '@/selectSubtitle/components/DetectSubtitle.vue';
+import PrefixIconButton from '@/components/PrefixIconButton.vue';
 import { get as storageGet, set as storageSet } from 'storage';
 import LoadingBar from '@/components/LoadingBar.vue';
 import { Entry } from '@/selectSubtitle/pages/selectSubtitleTypes';
@@ -59,7 +64,8 @@ export default defineComponent({
     DetectSubtitle,
     PickSeries,
     PageLayout,
-    LoadingBar
+    LoadingBar,
+    PrefixIconButton
   },
   props: {
     contentTransitionName: {
@@ -96,7 +102,7 @@ export default defineComponent({
             const [provider, id, language, filename] = path.split('/');
 
             const splitByUnderscore = filename?.replace('.srt', '')?.split('_') ?? [];
-            const episode = splitByUnderscore[splitByUnderscore.length - 1];
+            const episode = splitByUnderscore[splitByUnderscore.length - 1]?.replace(/^0+/, '')
             const name = splitByUnderscore.slice(0, splitByUnderscore.length - 1).join(' ');
             return {
               provider,
@@ -115,18 +121,25 @@ export default defineComponent({
       loading.value = false;
     });
 
+    const url = new URL(window.location.href);
+    const prefix = url.hostname === 'www.youtube.com' ? 'yt' : '<unknown>';
+    const isYoutube = computed(() => prefix === 'yt');
+
     return {
       videoCount: videoStore.getters.count,
       loading,
       tab: ref('pick'),
       signOut: loginStore.actions.signOut,
       entries,
+      isMatchingSubtitleInCurrentLanguage: computed(() => isYoutube.value && entries.value
+        .find((e) => e.id && e.id === url.searchParams.get('v') && e.language === language.value.iso639_2)
+      ),
       language,
       backFn: (): void => {
         videoStore.actions.removeCurrent();
         navigationStore.actions.toHome();
       },
-      selectSubtitle: async (entry) => {
+      selectSubtitle: async ({entry, afterDownloadFn}) => {
         appStore.actions.setState({ state: 'SELECTED' });
         appStore.actions.setSrc({ src: 'SEARCH' });
         selectSubtitleStore.actions.download(entry).then((raw) => {
@@ -137,7 +150,7 @@ export default defineComponent({
             language: 'en'
           });
           subtitleStore.actions.parse();
-        });
+        }).then(() => afterDownloadFn ? afterDownloadFn() : null);
         navigationStore.actions.toHome({ contentTransitionName: 'content-navigate-select-to-home' });
       }
     };

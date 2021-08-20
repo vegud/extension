@@ -10,10 +10,10 @@
     @update:show="$emit('update:show', $event)"
   >
     <template #currentSelected>
-      <span>Episode {{ selected === 0 ? 'All' : selected }}</span>
+      <span>Episode {{ selected === 0 ? '-' : selected }}</span>
     </template>
     <template #default="slotProps">
-      <span>{{ slotProps.item === 0 ? 'All' : slotProps.item }}</span>
+      <span>{{ slotProps.item === 0 ? '-' : slotProps.item }}</span>
     </template>
   </Select>
 </template>

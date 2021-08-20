@@ -55,9 +55,8 @@ export default defineComponent({
   setup(props) {
     return {
       filter: (query: string) => {
-        return props.entries;
-        // const lowerCaseQuery = query.toLowerCase();
-        // return languageList.filter(({ iso639Name, iso639_2 }) => iso639Name.toLowerCase().startsWith(query) || iso639_2.toLowerCase().startsWith(lowerCaseQuery));
+         const lowerCaseQuery = query.toLowerCase();
+         return props.entries.filter(({name}) => name.toLowerCase().startsWith(lowerCaseQuery));
       }
     };
   }
