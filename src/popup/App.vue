@@ -6,7 +6,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onUnmounted, PropType, provide, watch } from 'vue';
+import { computed, defineComponent, onUnmounted, PropType, provide, watch } from 'vue';
 import { init as initAppStore } from '@/app/store';
 import { init as initContentScriptStore } from '@/contentScript/store';
 import { init as initVideoStore } from '@/video/store';
@@ -16,6 +16,7 @@ import { init as initNavigationStore } from '@/navigation/store';
 import { init as initSelectStore } from '@/selectSubtitle/store';
 import { init as initAppearanceStore } from '@/appearance/store';
 import { init as initLoginStore } from '@/login/store';
+import { init as initTutorialStore } from '@/tutorial/store';
 
 import Home from '@/home/pages/Home.vue';
 import Loading from '@/loading/pages/Loading.vue';
@@ -61,6 +62,8 @@ export default defineComponent({
     provide('fileStore', fileStore);
     const appearanceStore = initAppearanceStore({ use: { contentScriptStore }, initStyle: props.style });
     provide('appearanceStore', appearanceStore);
+    const tutorialStore = initTutorialStore();
+    provide('tutorialStore', tutorialStore);
 
     //detect youtube video change:
     window.document.addEventListener('transitionend', (e: TransitionEvent) => {
@@ -109,9 +112,12 @@ export default defineComponent({
 
     onUnmounted(() => unmountSubject.next(undefined));
 
+    const initialized = computed(() => loginStore.getters.initialized && tutorialStore.getters.initialized);
+
     watch(
-      [loginStore.getters.initialized, loginStore.getters.login, videoStore.getters.count, appStore.state, videoStore.getters.list, videoStore.getters.current],
-      ([initialized, login, videoCount, appState, videoList], [_, __, prevVideoCount]) => {
+      [initialized, loginStore.getters.login, tutorialStore.getters.watched, videoStore.getters.count, appStore.state, videoStore.getters.list, videoStore.getters.current],
+      ([initialized, login, tutorialWatched, videoCount, appState, videoList], [_, __,prevTutorialWatched, prevVideoCount]) => {
+        console.warn('trigger!'+tutorialWatched);
         if(!initialized){
           return;
         }
@@ -119,8 +125,13 @@ export default defineComponent({
           navigationStore.actions.toLogin();
           return;
         }
+        if (!tutorialWatched) {
+          navigationStore.actions.toTutorial();
+          return;
+        }
+
         // navigate if only 1 video exists
-        if (videoCount === 1 && videoList[0] && navigationStore.state.value.name === 'HOME' && appState.state === 'NONE') {
+        if (videoCount === 1 && videoList[0] && (navigationStore.state.value.name === 'HOME' || navigationStore.state.value.name === 'TUTORIAL')  && appState.state === 'NONE') {
           videoStore.actions.setCurrent({ video: videoList[0] });
           navigationStore.actions.toSelectSubtitle();
           return;

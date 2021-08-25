@@ -7,8 +7,9 @@ import { FileStore } from '@/file/store';
 import { SelectSubtitleStore } from '@/selectSubtitle/store';
 import { AppearanceStore } from '@/appearance/store';
 import { LoginStore } from '@/login/store';
+import { TutorialStore } from '@/tutorial/store';
 
-type StoreKey = 'appStore' | 'subtitleStore' | 'videoStore' | 'navigationStore' | 'fileStore' | 'selectSubtitleStore' | 'appearanceStore' | 'loginStore';
+type StoreKey = 'appStore' | 'subtitleStore' | 'videoStore' | 'navigationStore' | 'fileStore' | 'selectSubtitleStore' | 'appearanceStore' | 'loginStore' | 'tutorialStore';
 type ReturnType<T extends StoreKey> = T extends 'appStore'
   ? AppStore
   : T extends 'subtitleStore'
@@ -25,6 +26,8 @@ type ReturnType<T extends StoreKey> = T extends 'appStore'
   ? AppearanceStore
   : T extends 'loginStore'
   ? LoginStore
+  : T extends 'tutorialStore'
+  ? TutorialStore
   : unknown;
 
 export const useInjectStore = <T extends StoreKey>(storeKey: T): ReturnType<T> => {
