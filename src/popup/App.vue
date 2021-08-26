@@ -117,7 +117,6 @@ export default defineComponent({
     watch(
       [initialized, loginStore.getters.login, tutorialStore.getters.watched, videoStore.getters.count, appStore.state, videoStore.getters.list, videoStore.getters.current],
       ([initialized, login, tutorialWatched, videoCount, appState, videoList], [_, __,prevTutorialWatched, prevVideoCount]) => {
-        console.warn('trigger!'+tutorialWatched);
         if(!initialized){
           return;
         }
@@ -131,11 +130,12 @@ export default defineComponent({
         }
 
         // navigate if only 1 video exists
-        if (videoCount === 1 && videoList[0] && (navigationStore.state.value.name === 'HOME' || navigationStore.state.value.name === 'TUTORIAL')  && appState.state === 'NONE') {
+        if (videoCount === 1 && videoList[0] &&  ['HOME', 'TUTORIAL', 'LOGIN'].includes(navigationStore.state.value.name)  && appState.state === 'NONE') {
           videoStore.actions.setCurrent({ video: videoList[0] });
           navigationStore.actions.toSelectSubtitle();
           return;
         }
+
         if (videoCount > 1 && prevVideoCount === 1 && navigationStore.state.value.name === 'SELECT_SUBTITLE' && appState.state === 'NONE') {
           videoStore.actions.removeCurrent();
           navigationStore.actions.toHome();

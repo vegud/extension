@@ -83,6 +83,8 @@ export default defineComponent({
 
     const entriesInCurrentLanguageUniqueName = computed(() => [...entriesInCurrentLanguageGroupByName.value.values()].reduce((acc, [entry]) => [...acc, entry], []));
     const entry = ref(entriesInCurrentLanguageUniqueName.value[0]);
+    const episode = ref(1);
+
     watch(entriesInCurrentLanguageUniqueName, (entries) => (entry.value = entries[0]));
 
     return {
@@ -94,10 +96,10 @@ export default defineComponent({
 
       showTitleSelection,
       showEpisodeSelection,
-      episode: ref(1),
+      episode,
       entry,
       go: () => {
-        const founded = entriesInCurrentLanguageGroupByName.value.get(entry.value.name)?.find((e) => e.episode === entry.value.episode);
+        const founded = entriesInCurrentLanguageGroupByName.value.get(entry.value.name)?.find((e) => e.episode === episode.value.toString());
         if (founded) {
           emit('select', {
             entry: founded.path,
@@ -108,8 +110,7 @@ export default defineComponent({
               if(isYoutube && isSameV){
                 return;
               }
-
-              return (window.location.href = `https://www.youtube.com/watch?v=${founded.id}`);
+              window.location.href = `https://www.youtube.com/watch?v=${founded.id}`;
             }
           });
         }
