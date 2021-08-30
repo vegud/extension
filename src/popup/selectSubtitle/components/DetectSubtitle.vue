@@ -6,7 +6,7 @@
     </div>
     <div v-if="matchingSubtitle" style="grid-area: matching" class="pt-3 pb-2 mt-5">
       <div class="italic pr-2 w-full text-center">We found a matching subtitle!</div>
-      <div class="flex justify-center items-center bg-primary-500 hover:bg-primary-700 text-on-primary-500 hover:text-on-primary-700 rounded-full py-2 px-4 mr-2 cursor-pointer mt-4" @click="$emit('select', matchingSubtitle?.path)">
+      <div class="flex justify-center items-center bg-primary-500 hover:bg-primary-700 text-on-primary-500 hover:text-on-primary-700 rounded-full py-2 px-4 mr-2 cursor-pointer mt-4" @click="$emit('select', {entry: matchingSubtitle?.path})">
         Click here to add subtitle ({{ matchingSubtitle?.name }})
       </div>
     </div>
