@@ -146,6 +146,12 @@ export default defineComponent({
           navigationStore.actions.toHome();
           return;
         }
+
+        if (['TUTORIAL', 'LOGIN'].includes(navigationStore.state.value.name)) {
+          navigationStore.actions.toHome();
+          return;
+        }
+
       },
       { immediate: true }
     );
