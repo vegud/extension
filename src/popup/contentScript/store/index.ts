@@ -9,6 +9,7 @@ export interface ContentScriptStore {
     messageObservable: Observable<MessageEventFromContentScript<string>>;
   };
   actions: {
+    unmount: () => void;
     requestAllContentScriptsToRegister: () => void;
     sendCommand: (origin: string, payload: Record<string, unknown>) => void;
     sendCommandAll: (payload: Record<string, unknown>) => void;
@@ -107,6 +108,7 @@ export const init = (): ContentScriptStore => {
       connectionObservable: connectionObservable
     },
     actions: {
+      unmount: () => unmountSubject.next(undefined),
       requestAllContentScriptsToRegister: () => {
         [...document.querySelectorAll('iframe'), { contentWindow: window }].map((w) =>
           w.contentWindow?.postMessage(

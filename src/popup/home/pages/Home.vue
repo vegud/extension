@@ -18,6 +18,9 @@
         </ResultFromSelectSubtitle>
 
         <PageVideos v-else-if="current === 'page-videos'" class="w-full" />
+        <div v-else-if="current === 'unknown'">
+          unknown
+        </div>
         <Mention/>
       </div>
     </template>

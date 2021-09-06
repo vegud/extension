@@ -19,7 +19,8 @@ module.exports = (env, argv) => {
     entry: {
       popup: './popup/index.ts',
       background: './background/index.ts',
-      contentScript: './contentScript/index.ts'
+      contentScript: './contentScript/index.ts',
+      redirectScript: './redirectScript/index.ts'
     },
     context: path.resolve(__dirname, 'src'),
     output: {

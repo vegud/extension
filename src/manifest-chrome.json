@@ -24,7 +24,8 @@
         "contentScript.css"
       ],
       "js": [
-        "contentScript.js"
+        "contentScript.js",
+        "redirectScript.js"
       ]
     }
   ],

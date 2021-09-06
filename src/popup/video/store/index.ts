@@ -22,6 +22,7 @@ type CurrentSelectedVideoState = Video | null;
 declare global {
   interface Window {
     plusSub_currentSelectedVideo: Ref<CurrentSelectedVideoState>;
+    plusSub_videos: Ref<Record<string, Video>>;
   }
 }
 
@@ -45,16 +46,15 @@ export interface VideoStore {
 
 export const init = ({ use }: InitPayload): VideoStore => {
   window.plusSub_currentSelectedVideo = window.plusSub_currentSelectedVideo ? ref(window.plusSub_currentSelectedVideo.value) : ref<CurrentSelectedVideoState>(null);
-
-  const videos = ref<Record<string, Video>>({});
+  window.plusSub_videos = window.plusSub_videos ? ref(window.plusSub_videos.value) : ref<Record<string, Video>>({});
 
   type FindVideosResultMessageEvent = MessageEventFromContentScript<'FIND_VIDEOS_RESULT'> & { data: { videos: Record<string, { id: string; hasSubtitle: boolean; origin: string }>; origin: string } };
 
   const findVideoResultObservable = use.contentScriptStore.state.messageObservable.pipe(
     filter<MessageEventFromContentScript<string>, FindVideosResultMessageEvent>((e): e is FindVideosResultMessageEvent => e.data.plusSubActionFromContentScript === 'FIND_VIDEOS_RESULT'),
     tap((e) => {
-      videos.value = {
-        ...Object.fromEntries(Object.entries(videos.value).filter(([, { origin }]) => origin !== e.data.origin)),
+      window.plusSub_videos.value = {
+        ...Object.fromEntries(Object.entries(window.plusSub_videos.value).filter(([, { origin }]) => origin !== e.data.origin)),
         ...e.data.videos
       };
 
@@ -106,7 +106,7 @@ export const init = ({ use }: InitPayload): VideoStore => {
   return {
     actions: {
       setCurrent: ({ video: { id } }: { video: Pick<Video, 'id'> }) => {
-        window.plusSub_currentSelectedVideo.value = videos.value[id] ?? null;
+        window.plusSub_currentSelectedVideo.value = window.plusSub_videos.value[id] ?? null;
       },
       removeCurrent: () => {
         window.plusSub_currentSelectedVideo.value = null;
@@ -141,7 +141,7 @@ export const init = ({ use }: InitPayload): VideoStore => {
           console.warn('setTime: current video not found');
           return;
         }
-        use.contentScriptStore.actions.sendCommand(videos.value[video.id].origin, {
+        use.contentScriptStore.actions.sendCommand(window.plusSub_videos.value[video.id].origin, {
           plusSubActionFromPopup: 'SET_TIME',
           id: video.id,
           time
@@ -194,21 +194,21 @@ export const init = ({ use }: InitPayload): VideoStore => {
           console.warn('highlight: video not found');
           return;
         }
-        use.contentScriptStore.actions.sendCommand(videos.value[video.id].origin, {
+        use.contentScriptStore.actions.sendCommand(window.plusSub_videos.value[video.id].origin, {
           plusSubActionFromPopup: 'HIGHLIGHT_VIDEO',
           id: video.id
         });
       },
       removeHighlight: () => {
-        new Set(Object.values(videos.value).map(({ origin }) => origin)).forEach((origin) => {
+        new Set(Object.values(window.plusSub_videos.value).map(({ origin }) => origin)).forEach((origin) => {
           use.contentScriptStore.actions.sendCommand(origin, { plusSubActionFromPopup: 'REMOVE_HIGHLIGHT_FROM_VIDEO' });
         });
       }
     },
     getters: {
       current: computed(() => window.plusSub_currentSelectedVideo.value),
-      list: computed(() => Object.values(videos.value)),
-      count: computed(() => Object.keys(videos.value).length)
+      list: computed(() => Object.values(window.plusSub_videos.value)),
+      count: computed(() => Object.keys(window.plusSub_videos.value).length)
     }
   };
 };

@@ -30,6 +30,7 @@ import TitleSelect from '@/selectSubtitle/components/TitleSelect.vue';
 import EpisodeSelect from '@/selectSubtitle/components/EpisodeSelect.vue';
 import { Entry, Language } from '@/selectSubtitle/pages/selectSubtitleTypes';
 import { groupBy, episodeComparator } from './fn';
+import { set as storageSet } from 'storage';
 
 export default defineComponent({
   components: {
@@ -103,7 +104,8 @@ export default defineComponent({
         if (founded) {
           emit('select', {
             entry: founded.path,
-            afterDownloadFn: () => {
+            afterDownloadFn: async () => {
+              await storageSet({redirected: founded});
               const url = new URL(window.location.href);
               const isYoutube = url.hostname === 'www.youtube.com';
               const isSameV = url.searchParams.get('v') === founded.id;
