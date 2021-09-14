@@ -12,7 +12,7 @@
 
     <div style="grid-area: episode" class="pt-3">
       <div class="pl-3 text-lg font-bold">Choose which Episode</div>
-      <EpisodeSelect v-model:selected="episode" :count="100" v-model:show="showEpisodeSelection"></EpisodeSelect>
+      <EpisodeSelect v-model:selected="episode" :count="episodeCount" v-model:show="showEpisodeSelection"></EpisodeSelect>
     </div>
 
     <div class="flex justify-end my-2" style="grid-area: go">
@@ -83,12 +83,12 @@ export default defineComponent({
     watch(showEpisodeSelection, (show) => setSetShowSelection(show, { language: false, title: false, episode: show }));
 
     const entriesInCurrentLanguageUniqueName = computed(() => [...entriesInCurrentLanguageGroupByName.value.values()].reduce((acc, [entry]) => [...acc, entry], []));
-    const entry = ref(entriesInCurrentLanguageUniqueName.value[0]);
+    const entry = computed(() => entriesInCurrentLanguageUniqueName.value[0]);
     const episode = ref(1);
-
-    watch(entriesInCurrentLanguageUniqueName, (entries) => (entry.value = entries[0]));
+    const episodeCount = computed(() => entriesInCurrentLanguageGroupByName.value.get(entry.value?.name)?.length ?? 0);
 
     return {
+      episodeCount,
       showLanguageSelection,
 
       entriesInCurrentLanguage,
@@ -105,11 +105,11 @@ export default defineComponent({
           emit('select', {
             entry: founded.path,
             afterDownloadFn: async () => {
-              await storageSet({redirected: founded});
+              await storageSet({ redirected: founded });
               const url = new URL(window.location.href);
               const isYoutube = url.hostname === 'www.youtube.com';
               const isSameV = url.searchParams.get('v') === founded.id;
-              if(isYoutube && isSameV){
+              if (isYoutube && isSameV) {
                 return;
               }
               window.location.href = `https://www.youtube.com/watch?v=${founded.id}`;
