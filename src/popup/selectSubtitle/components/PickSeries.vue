@@ -12,7 +12,7 @@
 
     <div style="grid-area: episode" class="pt-3">
       <div class="pl-3 text-lg font-bold">Choose which Episode</div>
-      <EpisodeSelect v-model:selected="episode" :count="episodeCount" v-model:show="showEpisodeSelection"></EpisodeSelect>
+      <EpisodeSelect v-model:selected="episode" :count="episodeCount" :labels="episodeLabels" v-model:show="showEpisodeSelection"></EpisodeSelect>
     </div>
 
     <div class="flex justify-end my-2" style="grid-area: go">
@@ -85,10 +85,8 @@ export default defineComponent({
     const entriesInCurrentLanguageUniqueName = computed(() => [...entriesInCurrentLanguageGroupByName.value.values()].reduce((acc, [entry]) => [...acc, entry], []));
     const entry = computed(() => entriesInCurrentLanguageUniqueName.value[0]);
     const episode = ref(1);
-    const episodeCount = computed(() => entriesInCurrentLanguageGroupByName.value.get(entry.value?.name)?.length ?? 0);
 
     return {
-      episodeCount,
       showLanguageSelection,
 
       entriesInCurrentLanguage,
@@ -96,26 +94,32 @@ export default defineComponent({
       entriesInCurrentLanguageUniqueName,
 
       showTitleSelection,
+
       showEpisodeSelection,
       episode,
+      episodeCount: computed(() => entriesInCurrentLanguageGroupByName.value.get(entry.value?.name)?.length ?? 0),
+      episodeLabels: computed(() => entriesInCurrentLanguageGroupByName.value.get(entry.value?.name)?.map((e) => e.episode) ?? []),
+
       entry,
       go: () => {
         const founded = entriesInCurrentLanguageGroupByName.value.get(entry.value.name)?.find((e) => e.episode === episode.value.toString());
-        if (founded) {
-          emit('select', {
-            entry: founded.path,
-            afterDownloadFn: async () => {
-              await storageSet({ redirected: founded });
-              const url = new URL(window.location.href);
-              const isYoutube = url.hostname === 'www.youtube.com';
-              const isSameV = url.searchParams.get('v') === founded.id;
-              if (isYoutube && isSameV) {
-                return;
-              }
-              window.location.href = `https://www.youtube.com/watch?v=${founded.id}`;
-            }
-          });
+        if (!founded) {
+          return;
         }
+
+        emit('select', {
+          entry: founded.path,
+          afterDownloadFn: async () => {
+            await storageSet({ redirected: founded });
+            const url = new URL(window.location.href);
+            const isYoutube = url.hostname === 'www.youtube.com';
+            const isSameV = url.searchParams.get('v') === founded.id;
+            if (isYoutube && isSameV) {
+              return;
+            }
+            window.location.href = `https://www.youtube.com/watch?v=${founded.id}`;
+          }
+        });
       }
     };
   }

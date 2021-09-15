@@ -6,14 +6,14 @@
     :filter-fn="filter"
     filter-placeholder="Filter episodes"
     class="px-2 mt-2"
-    @update:selected="$emit('update:selected', $event)"
+    @update:selected="$emit('update:selected', labels[$event-1] ?? $event)"
     @update:show="$emit('update:show', $event)"
   >
     <template #currentSelected>
-      <span>Episode {{ selected === 0 ? '-' : selected }}</span>
+      <span>Episode {{ label(selected) }}</span>
     </template>
     <template #default="slotProps">
-      <span>{{ slotProps.item === 0 ? '-' : slotProps.item }}</span>
+      <span>{{ label(slotProps.item) }}</span>
     </template>
   </Select>
 </template>
@@ -39,6 +39,11 @@ export default defineComponent({
     count: {
       type: Number as PropType<number>,
       required: true
+    },
+    labels: {
+      type: Array as PropType<string[]>,
+      required: false,
+      default: []
     }
   },
   emits: ['update:selected', 'update:show'],
@@ -51,7 +56,13 @@ export default defineComponent({
     });
     return {
       episodeList,
-      filter: (query: string) => episodeList.value.filter((e) => e.toString() === query.toString())
+      filter: (query: string) => episodeList.value.filter((e) => e.toString() === query.toString()),
+      label: (idx) => {
+        if(idx === 0){
+          return "-"
+        }
+        return props.labels[idx-1] ?? idx;
+      }
     };
   }
 });
