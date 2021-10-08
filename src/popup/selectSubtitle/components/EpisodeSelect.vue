@@ -10,7 +10,7 @@
     @update:show="$emit('update:show', $event)"
   >
     <template #currentSelected>
-      <span>Episode {{ label(selected) }}</span>
+      <span>Episode {{ selected === 0 ? '-' : selected }}</span>
     </template>
     <template #default="slotProps">
       <span>{{ label(slotProps.item) }}</span>

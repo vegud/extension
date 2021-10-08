@@ -19,10 +19,8 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType } from 'vue';
+import { defineComponent, PropType } from 'vue';
 import Select from '@/components/Select.vue';
-import { capitalizeFirst } from '@/util/string';
-import languageList from '@/res/iso639List.json';
 
 interface Entry {
   provider: string;

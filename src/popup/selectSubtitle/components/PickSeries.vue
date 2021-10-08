@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref, watch } from 'vue';
+import { computed, defineComponent, onMounted, PropType, ref, watch } from 'vue';
 import LanguageSelect from '@/components/LanguageSelect.vue';
 import TitleSelect from '@/selectSubtitle/components/TitleSelect.vue';
 import EpisodeSelect from '@/selectSubtitle/components/EpisodeSelect.vue';
@@ -83,7 +83,9 @@ export default defineComponent({
     watch(showEpisodeSelection, (show) => setSetShowSelection(show, { language: false, title: false, episode: show }));
 
     const entriesInCurrentLanguageUniqueName = computed(() => [...entriesInCurrentLanguageGroupByName.value.values()].reduce((acc, [entry]) => [...acc, entry], []));
-    const entry = computed(() => entriesInCurrentLanguageUniqueName.value[0]);
+    const entry = ref(entriesInCurrentLanguageUniqueName.value[0]);
+    watch(entriesInCurrentLanguageUniqueName, () => entry.value = entriesInCurrentLanguageUniqueName.value[0]);
+
     const episode = ref(1);
 
     return {
