@@ -1,12 +1,22 @@
 // webpack.config.js
 /* eslint @typescript-eslint/no-var-requires: "off" */
-const path = require('path');
-const { VueLoaderPlugin } = require('vue-loader');
-const CopyPlugin = require('copy-webpack-plugin');
-const webpack = require('webpack');
-const extensionKey = require("./extensionKey");
+import {resolve} from 'path';
+import { VueLoaderPlugin } from 'vue-loader';
+import CopyPlugin from 'copy-webpack-plugin';
+import webpack from 'webpack';
+import extensionKey from "./extensionKey.js";
+import { readFileSync } from 'fs';
 
-module.exports = (env, argv) => {
+const setObject = (object, key, value) => ({
+  ...object,
+  [key]: value,
+});
+
+const whenSetObject = (predicate, object, key, value) => predicate() ? setObject(object, key, value) : {...object};
+
+const toPrettyJson = (obj) => JSON.stringify(obj, null, 2);
+
+export default (env) => {
   const browser = (env.browser ? env.browser.toLowerCase() : 'unknown').trim();
   if (browser !== 'chrome' && browser !== 'firefox') {
     throw new Error(`unknown browser: ${browser}`);
@@ -19,27 +29,26 @@ module.exports = (env, argv) => {
     entry: {
       popup: './popup/index.ts',
       background: './background/index.ts',
-      contentScript: './contentScript/index.ts',
       redirectScript: './redirectScript/index.ts'
     },
-    context: path.resolve(__dirname, 'src'),
+    context: resolve('src'),
     output: {
       filename: '[name].js',
-      path: path.resolve(__dirname, `dist-${browser}`)
+      path: resolve(`dist-${browser}`)
     },
     resolve: {
       extensions: ['.ts', '.js', '.vue', '.json', '.mjs'],
       alias: {
-        '@': path.resolve(__dirname, 'src/popup'),
+        '@': resolve( 'src/popup'),
         // It seems the problem has been solve. https://github.com/vuejs/vue-cli/pull/5788
         // this isn't technically needed, since the default `vue` entry for bundlers
         // is a simple `export * from '@vue/runtime-dom`. However having this
         // extra re-export somehow causes webpack to always invalidate the module
         // on the first HMR update and causes the page to reload.
         // vue: '@vue/runtime-dom',
-        storage: path.resolve(__dirname, `src/popup/platform/storage/${browser}/index.ts`),
-        monkeyPatchApollo: path.resolve(__dirname, `src/popup/platform/monkeyPatchApollo/${browser}/index.ts`),
-        onPageActionClicked: path.resolve(__dirname, `src/background/platform/onPageActionClicked/${browser}/index.ts`)
+        storage: resolve(`src/popup/platform/storage/${browser}/index.ts`),
+        monkeyPatchApollo: resolve(`src/popup/platform/monkeyPatchApollo/${browser}/index.ts`),
+        onPageActionClicked: resolve(`src/background/platform/onPageActionClicked/${browser}/index.ts`)
       }
     },
     module: {
@@ -112,18 +121,18 @@ module.exports = (env, argv) => {
           {
             from: `manifest-${browser}.json`,
             to: 'manifest.json',
-            transform(manifest) {
-              return env.add_manifest_key
-                ? JSON.stringify({
-                  ...JSON.parse(manifest.toString()),
-                  ...extensionKey
-                }, null, 2)
-                : manifest;
-            }
+            transform: (manifest) => toPrettyJson(
+              whenSetObject(
+                () => env.add_manifest_key,
+                setObject(JSON.parse(manifest.toString()), 'version', JSON.parse(readFileSync(resolve('package.json'))).version),
+                'key',
+                extensionKey.key
+              ))
           },
           { from: 'res', to: 'res' },
           { from: 'popup/font.css', to: 'font.css' },
-          { from: 'contentScript/contentScript.css', to: 'contentScript.css' }
+          { from: '../node_modules/@plussub/extension/dist-chrome/contentScript.css', to: 'contentScript.css' },
+          { from: '../node_modules/@plussub/extension/dist-chrome/contentScript.js', to: 'contentScript.js' }
         ]
       }),
       new webpack.DefinePlugin({
