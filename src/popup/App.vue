@@ -56,12 +56,12 @@ export default defineComponent({
     const subtitleStore = initSubtitleStore({ use: { appStore } });
     provide('subtitleStore', subtitleStore);
     const contentScriptStore = initContentScriptStore();
-    const videoStore = initVideoStore({ use: { contentScriptStore } });
+    const appearanceStore = initAppearanceStore({ use: { contentScriptStore }, initStyle: props.style });
+    provide('appearanceStore', appearanceStore);
+    const videoStore = initVideoStore({ use: { contentScriptStore, appearanceStore } });
     provide('videoStore', videoStore);
     const fileStore = initFileStore();
     provide('fileStore', fileStore);
-    const appearanceStore = initAppearanceStore({ use: { contentScriptStore }, initStyle: props.style });
-    provide('appearanceStore', appearanceStore);
     const tutorialStore = initTutorialStore();
     provide('tutorialStore', tutorialStore);
 
@@ -81,11 +81,12 @@ export default defineComponent({
 
     const unmountSubject = new Subject<undefined>();
     contentScriptStore.actions.requestAllContentScriptsToRegister();
-    contentScriptStore.state.messageObservable.pipe(
-      filter((e) => e.data.plusSubActionFromContentScript === 'ADJUST_POPUP'),
-      tap(() => document.documentElement.style.setProperty('--plusSub-shadow-top', `${window.scrollY + 30}px`)),
-      takeUntil(unmountSubject)
-    );
+    // todo:
+    // contentScriptStore.state.messageObservable.pipe(
+    //   filter((e) => e.data.plusSubActionFromContentScript === 'ADJUST_POPUP'),
+    //   tap(() => document.documentElement.style.setProperty('--plusSub-shadow-top', `${window.scrollY + 30}px`)),
+    //   takeUntil(unmountSubject)
+    // );
 
     watch(
       () => videoStore.getters.current.value,

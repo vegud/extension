@@ -1,24 +1,24 @@
 <template>
-  <div ref='transcriptContentContainer' class='mt-1 overflow-y-auto select-none'>
+  <div ref="transcriptContentContainer" class="mt-1 overflow-y-auto select-none">
     <div
-      v-for='(subtitleText, index) in subtitleTexts'
-      :key='index'
-      class='flex px-1 pt-4 pb-1 border-primary-700 cursor-pointer hover:bg-primary-700 hover:text-on-primary-700 hover:border-primary-900'
+      v-for="(subtitleText, index) in subtitleTexts"
+      :key="index"
+      class="flex px-1 pt-4 pb-1 border-primary-700 cursor-pointer hover:bg-primary-700 hover:text-on-primary-700 hover:border-primary-900"
       :class="{ 'bg-surface-100': currentPos === index, 'border-l-4': currentPos === index }"
-      @click.exact='setCurrentTime(subtitleText)'
-      @click.shift.prevent='copy(subtitleText)'
+      @click.exact="setCurrentTime(subtitleText)"
+      @click.shift.prevent="copy(subtitleText)"
     >
-      <span class='text-center flex-shrink-0 w-14' v-text='subtitleText.formattedFrom'></span>
-      <span class='text-left' v-text='subtitleText.text'></span>
+      <span class="text-center flex-shrink-0 w-14" v-text="subtitleText.formattedFrom"></span>
+      <span class="text-left" v-text="subtitleText.text"></span>
     </div>
   </div>
 </template>
 
-<script lang='ts'>
-import { computed, defineComponent, PropType, ref, watch } from 'vue';
+<script lang="ts">
+import {computed, defineComponent, PropType, ref, watch} from 'vue';
 import { useInjectStore } from '@/useInjectStore';
 import { binarySearch } from './binarySearch';
-import Duration from 'luxon/src/duration';
+import Duration from "luxon/src/duration";
 
 export default defineComponent({
   props: {
@@ -31,18 +31,13 @@ export default defineComponent({
   setup(props) {
     const subtitleStore = useInjectStore('subtitleStore');
     const videoStore = useInjectStore('videoStore');
-
-    const currentTime = ref<number>(0);
-
-    videoStore.actions.useTimeUpdate(({ time }): void => {
-      currentTime.value = time;
-    });
+    const currentTime = computed(() => parseInt(videoStore.getters.current.value?.lastTimestamp ?? '0', 10));
 
     const currentPos = ref(-1);
     const transcriptContentContainer = ref<HTMLElement | null>(null);
 
     watch(currentTime, (currentTime) => {
-      const pos = binarySearch(Math.ceil(currentTime * 1000), subtitleStore.state.value.withOffsetParsed);
+      const pos = binarySearch(currentTime, subtitleStore.state.value.withOffsetParsed);
 
       if (pos === -1) return;
 

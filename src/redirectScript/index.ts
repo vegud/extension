@@ -6,6 +6,7 @@ import { init as initSubtitleStore } from '@/subtitle/store';
 import { init as initAppStore } from '@/app/store';
 import { init as initContentScriptStore } from '@/contentScript/store';
 import { init as initVideoStore } from '@/video/store';
+import { init as initAppearanceStore } from '@/appearance/store';
 
 export interface Entry {
   provider: string;
@@ -17,7 +18,7 @@ export interface Entry {
   path: string;
 }
 (async () => {
-  const { redirected } = await storageGet<Entry>(['redirected']);
+  const { redirected, style } = await storageGet<Entry>(['redirected', 'style']);
   if(!redirected){
     return;
   }
@@ -32,12 +33,16 @@ export interface Entry {
   const appStore = initAppStore();
   const subtitleStore = initSubtitleStore({ use: { appStore } });
   const contentScriptStore = initContentScriptStore();
-  const videoStore = initVideoStore({ use: { contentScriptStore } });
+
+  const appearanceStore = initAppearanceStore({ use: { contentScriptStore }, initStyle: style ?? {} });
+  const videoStore = initVideoStore({ use: { contentScriptStore, appearanceStore } });
 
   contentScriptStore.actions.requestAllContentScriptsToRegister();
+  // document.querySelector('video')!.dataset.plusSubStatus = 'selected';
 
-  watch([loginStore.getters.initialized, videoStore.getters.list], async ([init, list]) => {
-    if(!init || list.length === 0 ){
+
+  watch([loginStore.getters.initialized], async ([init]) => {
+    if(!init){
       return;
     }
 
@@ -49,12 +54,14 @@ export interface Entry {
       language: 'en'
     });
     subtitleStore.actions.parse();
-    videoStore.actions.setCurrent({ video: list[0]});
-    appStore.actions.setState({ state: 'SELECTED' });
-    appStore.actions.setSrc({ src: 'SEARCH' });
-    videoStore.actions.addVtt({subtitles: subtitleStore.state.value.parsed, subtitleId: redirected.id, language: "en" });
-    contentScriptStore.actions.unmount();
+    // await videoStore.actions.setCurrent({ video: list[0]});
+    document.querySelector('video')!.dataset.plusSubStatus = 'selected';
+    setTimeout(() => {
+      appStore.actions.setState({ state: 'SELECTED' });
+      appStore.actions.setSrc({ src: 'SEARCH' });
+      videoStore.actions.addVtt({subtitles: subtitleStore.state.value.parsed, subtitleId: redirected.id, language: "en" });
+    }, 500);
   });
-  // await storageRemove(['redirected']);
+  await storageRemove(['redirected']);
 })();
 

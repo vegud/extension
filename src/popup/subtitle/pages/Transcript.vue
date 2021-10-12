@@ -1,9 +1,11 @@
 <template>
-  <PageLayout :content-transition-name="contentTransitionName" has-back>
+  <PageLayout :content-transition-name="contentTransitionName">
     <template #toolbar>
-      <a class="self-center pr-4" :title="infoTooltip">
-        <FontAwesomeIcon icon="question-circle" class="h-icon hover:text-on-primary-hover-500"></FontAwesomeIcon>
-      </a>
+      <Toolbar has-back>
+        <a class="self-center pr-4" :title="infoTooltip">
+          <FontAwesomeIcon icon="question-circle" class="h-icon hover:text-on-primary-hover-500"></FontAwesomeIcon>
+        </a>
+      </Toolbar>
     </template>
     <template #content>
       <div class="w-full h-full grid relative justify-center transcript-content--container">
@@ -28,13 +30,15 @@ import LoadingBar from '@/foundation/components/LoadingBar.vue';
 import FontAwesomeIcon from '@/foundation/components/FontAwesomeIcon/FontAwesomeIcon.vue';
 import TranscriptContent from '@/subtitle/components/TranscriptContent.vue';
 import { useInjectStore } from '@/useInjectStore';
+import Toolbar from '@/Toolbar/Toolbar.vue';
 
 export default defineComponent({
   components: {
+    FontAwesomeIcon,
+    Toolbar,
     PageLayout,
     LoadingBar,
-    TranscriptContent,
-    FontAwesomeIcon
+    TranscriptContent
   },
   props: {
     contentTransitionName: {
@@ -45,14 +49,8 @@ export default defineComponent({
   },
   setup() {
     const videoStore = useInjectStore('videoStore');
-    const currentTime = ref<number>(0);
-
-    videoStore.actions.useTimeUpdate(({ time }): void => {
-      currentTime.value = time;
-    });
-
     return {
-      currentTimePretty: computed(() => Duration.fromMillis(currentTime.value * 1000).toFormat('mm:ss')),
+      currentTimePretty:  computed(() => Duration.fromMillis(parseInt(videoStore.getters.current.value?.lastTimestamp ?? '0' , 10)).toFormat('mm:ss')),
       infoTooltip: computed(() => [`left click - jump to time point`, `shift + left click - copy text to clipboard`].join('\n'))
     };
   }

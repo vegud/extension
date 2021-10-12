@@ -55,7 +55,6 @@ export default defineComponent({
     const subtitleStore = useInjectStore('subtitleStore');
     const navigationStore = useInjectStore('navigationStore');
     const videoStore = useInjectStore('videoStore');
-    const trackStore = useInjectStore('trackStore');
 
     const inputRef = ref<{ files: { name: string } | Blob[] } | null>(null);
 
@@ -91,7 +90,6 @@ export default defineComponent({
 
       try {
         subtitleStore.actions.parse();
-        trackStore.actions.track({ source: 'file', language: '' });
       } catch (e) {
         showFileErrorMsg('Parse error, not a valid subtitle file');
         appStore.actions.reset();
@@ -101,9 +99,13 @@ export default defineComponent({
         return;
       }
 
-      navigationStore.actions.toHome({
-        contentTransitionName: 'content-navigate-select-to-home'
-      });
+      // workaround for contentscript communication
+      setTimeout(() => {
+        navigationStore.actions.toHome({
+          contentTransitionName: 'content-navigate-select-to-home'
+        });
+      },100);
+
     };
     const onError = (): void => showFileErrorMsg('Some error happened when parsing the subtitle');
 
