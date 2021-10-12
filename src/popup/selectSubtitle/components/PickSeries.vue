@@ -2,7 +2,7 @@
   <div class="w-full h-full grid relative justify-center pick-subtitle-content--container">
     <div style="grid-area: language" class="pt-3">
       <div class="pl-3 text-lg font-bold">Choose the language of subtitles</div>
-      <LanguageSelect :selected="language" @update:selected="$emit('update:language', $event)" v-model:show="showLanguageSelection"></LanguageSelect>
+      <LanguageSelect :selected="language" :filter-list="['ar', 'fr', 'en', 'fr', 'de', 'de', 'es', 'it']" @update:selected="$emit('update:language', $event)" v-model:show="showLanguageSelection"></LanguageSelect>
     </div>
 
     <div style="grid-area: title" class="pt-3">
@@ -25,7 +25,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, onMounted, PropType, ref, watch } from 'vue';
-import LanguageSelect from '@/components/LanguageSelect.vue';
+import LanguageSelect from '@/foundation/components/LanguageSelect/LanguageSelect.vue';
 import TitleSelect from '@/selectSubtitle/components/TitleSelect.vue';
 import EpisodeSelect from '@/selectSubtitle/components/EpisodeSelect.vue';
 import { Entry, Language } from '@/selectSubtitle/pages/selectSubtitleTypes';

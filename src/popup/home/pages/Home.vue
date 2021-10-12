@@ -1,9 +1,11 @@
 <template>
   <PageLayout :content-transition-name="contentTransitionName">
     <template #toolbar>
-      <a class="self-center pr-4" @click="signOut()">
-        <fa icon="sign-out-alt" class="h-icon hover:text-on-primary-hover-500"></fa>
-      </a>
+      <Toolbar>
+        <a class="self-center pr-4" @click="signOut()">
+          <FontAwesomeIcon icon="sign-out-alt" class="h-icon hover:text-on-primary-hover-500"></FontAwesomeIcon>
+        </a>
+      </Toolbar>
     </template>
     <template #content>
       <div class="flex flex-wrap h-full home-content--container" :class="{ 'bg-surface-100': current === 'select-card' }">
@@ -30,12 +32,14 @@
 <script lang="ts">
 import { computed, defineComponent, PropType } from 'vue';
 
-import PageLayout from '@/components/PageLayout.vue';
+import PageLayout from '@/foundation/components/PageLayout.vue';
 import ResultFromSelectSubtitle from '@/selectSubtitle/components/ResultFromSelectSubtitle.vue';
 import PageVideos from '@/video/components/PageVideos.vue';
 import Settings from '@/subtitle/components/Settings.vue';
-import { useInjectStore } from '@/composables/useInjectStore';
+import { useInjectStore } from '@/useInjectStore';
 import Mention from "@/home/components/Mention.vue";
+import FontAwesomeIcon from '@/foundation/components/FontAwesomeIcon/FontAwesomeIcon.vue';
+import Toolbar from '@/Toolbar/Toolbar.vue';
 
 export default defineComponent({
   components: {
@@ -43,7 +47,9 @@ export default defineComponent({
     ResultFromSelectSubtitle,
     PageVideos,
     Settings,
-    Mention
+    Mention,
+    FontAwesomeIcon,
+    Toolbar
   },
   props: {
     contentTransitionName: {

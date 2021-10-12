@@ -1,5 +1,8 @@
 <template>
   <PageLayout :content-transition-name="contentTransitionName">
+    <template #toolbar>
+      <Toolbar/>
+    </template>
     <template #content>
       <div class="grid login-container pt-3">
         <div style="grid-area: mail" class="flex flex-col">
@@ -15,7 +18,7 @@
           <a class="text-on-primary-500 hover:text-on-primary-700 pr-2">
             Sign-In
           </a>
-          <fa v-if="status === 'loading'" icon="circle-notch" class="h-icon-sm animate-spin text-on-primary-500"/>
+          <FontAwesomeIcon v-if="status === 'loading'" icon="circle-notch" class="h-icon-sm animate-spin text-on-primary-500"/>
         </div>
 
         <div style="grid-area: forgot" class="flex items-start justify-end mt-1" @click="redirectToForgotPassword">
@@ -42,19 +45,23 @@
 
 <script lang="ts">
 import { computed, defineComponent, PropType, ref, watch } from 'vue';
-import PageLayout from '@/components/PageLayout.vue';
-import { useInjectStore } from '@/composables/useInjectStore';
-import { close } from '@/components/Toolbar/close';
-import InputField from '@/components/InputField.vue';
+import PageLayout from '@/foundation/components/PageLayout.vue';
+import { useInjectStore } from '@/useInjectStore';
+import { close } from '@/Toolbar/close';
+import InputField from '@/foundation/components/InputField.vue';
 import PasswordInputField from '@/components/PasswordInputField.vue';
-import Divider from '@/components/Divider.vue';
+import Divider from '@/foundation/components/Divider.vue';
+import Toolbar from '@/Toolbar/Toolbar.vue';
+import FontAwesomeIcon from '@/foundation/components/FontAwesomeIcon/FontAwesomeIcon.vue';
 
 export default defineComponent({
   components: {
     PageLayout,
     InputField,
     PasswordInputField,
-    Divider
+    Divider,
+    Toolbar,
+    FontAwesomeIcon
   },
   props: {
     contentTransitionName: {

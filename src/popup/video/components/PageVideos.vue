@@ -28,12 +28,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, inject, onUnmounted } from 'vue';
-import { Video, VideoStore } from '@/video/store';
+import { defineComponent, onUnmounted } from 'vue';
+import { Video } from '@/video/store';
 
-import Divider from '@/components/Divider.vue';
-import { NavigationStore } from '@/navigation/store';
-import { useInjectStore } from '@/composables/useInjectStore';
+import Divider from '@/foundation/components/Divider.vue';
+import { useInjectStore } from '@/useInjectStore';
 
 export default defineComponent({
   components: {

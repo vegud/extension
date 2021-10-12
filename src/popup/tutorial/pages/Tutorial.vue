@@ -1,5 +1,8 @@
 <template>
   <PageLayout :content-transition-name="contentTransitionName">
+    <template #toolbar>
+      <Toolbar/>
+    </template>
     <template #content>
       <div class="relative bg-surface-50 w-full grid rounded-lg shadow-lg border border-primary-700 m-2 tutorial-container gap-2" style="width: calc(100% - 16px)">
         <div class="flex mt-2 px-2 flex-wrap" style="grid-area: header">
@@ -35,23 +38,20 @@
         </div>
 
       </div>
-
-
-
-
-
     </template>
   </PageLayout>
 </template>
 
 <script lang="ts">
 import { defineComponent, PropType, ref } from 'vue';
-import PageLayout from '@/components/PageLayout.vue';
-import { useInjectStore } from '@/composables/useInjectStore';
+import PageLayout from '@/foundation/components/PageLayout.vue';
+import Toolbar from '@/Toolbar/Toolbar.vue';
+import { useInjectStore } from '@/useInjectStore';
 
 export default defineComponent({
   components: {
-    PageLayout
+    PageLayout,
+    Toolbar
   },
   props: {
     contentTransitionName: {

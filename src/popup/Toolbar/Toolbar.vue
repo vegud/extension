@@ -1,7 +1,7 @@
 <template>
   <div ref="draggableAreaRef" class="grid shadow home-toolbar--container--content cursor-grab active:cursor-grabbing bg-primary-500 text-on-primary-500">
     <a v-if="hasBack" style="grid-area: logo" @click="backFn ? backFn() : toHome()">
-      <fa icon="chevron-left" class="h-full py-2 pl-1 hover:text-on-primary-hover-500" />
+      <FontAwesomeIcon icon="chevron-left" class="h-full py-2 pl-1 hover:text-on-primary-hover-500" />
     </a>
     <div v-else class="p-1">
       <logo style="grid-area: logo" class="h-full w-full" />
@@ -13,7 +13,7 @@
 
     <div style="grid-area: close" class="flex items-center mr-3">
       <a @click="close">
-        <fa icon="window-minimize" class="h-icon hover:text-on-primary-hover-500" />
+        <FontAwesomeIcon icon="window-minimize" class="h-icon hover:text-on-primary-hover-500" />
       </a>
     </div>
   </div>
@@ -21,16 +21,18 @@
 
 <script lang="ts">
 import { defineComponent, PropType, ref } from 'vue';
-import { useDraggableArea } from '@/composables';
+import { useDraggableArea } from '@/foundation/composables';
 import Logo from './Logo.vue';
+import FontAwesomeIcon from '@/foundation/components/FontAwesomeIcon/FontAwesomeIcon.vue';
 
 import { close } from './close';
 import logo from '@/res/plussub128.png';
-import { useInjectStore } from '@/composables/useInjectStore';
+import { useInjectStore } from '@/useInjectStore';
 
 export default defineComponent({
   components: {
-    Logo
+    Logo,
+    FontAwesomeIcon
   },
   props: {
     hasBack: {

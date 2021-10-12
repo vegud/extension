@@ -20,7 +20,7 @@
 
 <script lang="ts">
 import {computed, defineComponent, PropType, watch} from 'vue';
-import { default as Select } from '@/components/Select.vue';
+import { default as Select } from '@/foundation/components/Select.vue';
 
 export default defineComponent({
   components: {

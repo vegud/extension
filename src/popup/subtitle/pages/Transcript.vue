@@ -2,7 +2,7 @@
   <PageLayout :content-transition-name="contentTransitionName" has-back>
     <template #toolbar>
       <a class="self-center pr-4" :title="infoTooltip">
-        <fa icon="question-circle" class="h-icon hover:text-on-primary-hover-500"></fa>
+        <FontAwesomeIcon icon="question-circle" class="h-icon hover:text-on-primary-hover-500"></FontAwesomeIcon>
       </a>
     </template>
     <template #content>
@@ -23,16 +23,18 @@
 import { computed, defineComponent, PropType, ref } from 'vue';
 import Duration from 'luxon/src/duration.js';
 
-import PageLayout from '@/components/PageLayout.vue';
-import LoadingBar from '@/components/LoadingBar.vue';
+import PageLayout from '@/foundation/components/PageLayout.vue';
+import LoadingBar from '@/foundation/components/LoadingBar.vue';
+import FontAwesomeIcon from '@/foundation/components/FontAwesomeIcon/FontAwesomeIcon.vue';
 import TranscriptContent from '@/subtitle/components/TranscriptContent.vue';
-import { useInjectStore } from '@/composables/useInjectStore';
+import { useInjectStore } from '@/useInjectStore';
 
 export default defineComponent({
   components: {
     PageLayout,
     LoadingBar,
-    TranscriptContent
+    TranscriptContent,
+    FontAwesomeIcon
   },
   props: {
     contentTransitionName: {

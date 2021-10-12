@@ -38,10 +38,10 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import Duration from 'luxon/src/duration';
-import PrefixIconButton from '@/components/PrefixIconButton.vue';
-import Divider from '@/components/Divider.vue';
+import PrefixIconButton from '@/foundation/components/PrefixIconButton.vue';
+import Divider from '@/foundation/components/Divider.vue';
 import TimeSettings from '@/subtitle/components/TimeSettings.vue';
-import { useInjectStore } from '@/composables/useInjectStore';
+import { useInjectStore } from '@/useInjectStore';
 import TranscriptPanel from "@/subtitle/components/TranscriptPanel.vue";
 import AppearanceSettings from "@/appearance/components/AppearanceSettings.vue";
 

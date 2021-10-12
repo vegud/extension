@@ -1,9 +1,11 @@
 <template>
-  <PageLayout :content-transition-name="contentTransitionName" :has-back="videoCount > 1" :back-fn="backFn">
+  <PageLayout :content-transition-name="contentTransitionName">
     <template #toolbar>
-      <a class="self-center pr-4" @click="signOut()">
-        <fa icon="sign-out-alt" class="h-icon hover:text-on-primary-hover-500"></fa>
-      </a>
+      <Toolbar :has-back="videoCount > 1" :back-fn="backFn">
+        <a class="self-center pr-4" @click="signOut()">
+          <FontAwesomeIcon icon="sign-out-alt" class="h-icon hover:text-on-primary-hover-500"></FontAwesomeIcon>
+        </a>
+      </Toolbar>
     </template>
     <template #content>
       <div class="relative bg-surface-50 w-full grid rounded-lg shadow-lg border border-primary-700 m-2" style="width: calc(100% - 16px)">
@@ -38,14 +40,16 @@
 </template>
 
 <script lang="ts">
-import PageLayout from '@/components/PageLayout.vue';
+import PageLayout from '@/foundation/components/PageLayout.vue';
 import { computed, defineComponent, onMounted, PropType, ref, watch } from 'vue';
-import { useInjectStore } from '@/composables/useInjectStore';
+import { useInjectStore } from '@/useInjectStore';
 import PickSeries from '@/selectSubtitle/components/PickSeries.vue';
 import DetectSubtitle from '@/selectSubtitle/components/DetectSubtitle.vue';
-import PrefixIconButton from '@/components/PrefixIconButton.vue';
+import PrefixIconButton from '@/foundation/components/PrefixIconButton.vue';
+import FontAwesomeIcon from '@/foundation/components/FontAwesomeIcon/FontAwesomeIcon.vue';
 import { get as storageGet, set as storageSet } from 'storage';
-import LoadingBar from '@/components/LoadingBar.vue';
+import LoadingBar from '@/foundation/components/LoadingBar.vue';
+import Toolbar from '@/Toolbar/Toolbar.vue';
 import { Entry } from '@/selectSubtitle/pages/selectSubtitleTypes';
 
 const sort = (arr, comp) => [...arr].sort(comp);
@@ -65,7 +69,9 @@ export default defineComponent({
     PickSeries,
     PageLayout,
     LoadingBar,
-    PrefixIconButton
+    PrefixIconButton,
+    FontAwesomeIcon,
+    Toolbar
   },
   props: {
     contentTransitionName: {

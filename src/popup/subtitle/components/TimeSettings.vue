@@ -22,10 +22,10 @@ import { defineComponent, ref } from 'vue';
 import { computed } from '@vue/reactivity';
 import Timeline from './Timeline.vue';
 import Excerpt from './Excerpt.vue';
-import NumberInputField from '@/components/NumberInputField.vue';
+import NumberInputField from '@/foundation/components/NumberInputField.vue';
 import Duration from 'luxon/src/duration';
-import RangeInputField from '@/components/RangeInputField.vue';
-import { useInjectStore } from '@/composables/useInjectStore';
+import RangeInputField from '@/foundation/components/RangeInputField.vue';
+import { useInjectStore } from '@/useInjectStore';
 
 export default defineComponent({
   components: {

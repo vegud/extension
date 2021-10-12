@@ -25,7 +25,7 @@ import Settings from '@/settings/pages/Settings.vue';
 import '@/styles.css';
 import { filter, takeUntil, tap } from 'rxjs/operators';
 import { Subject } from 'rxjs';
-import { close } from '@/components/Toolbar/close';
+import { close } from '@/Toolbar/close';
 
 export default defineComponent({
   components: {

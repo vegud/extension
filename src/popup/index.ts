@@ -1,6 +1,6 @@
 import { createApp, App } from 'vue';
 import appComponent from './App.vue';
-import FontAwesomeIcon from "@/components/FontAwesomeIcon/fontAwesome";
+import FontAwesomeIcon from "./fontAwesome";
 import {get as storageGet} from 'storage';
 
 let app: App;

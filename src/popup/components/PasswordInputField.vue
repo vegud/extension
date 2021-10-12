@@ -14,16 +14,20 @@
         @keypress.stop
     />
     <div v-if="withClear" class="justify-self-end self-center mr-2 text" style="grid-area: bar">
-      <fa v-if="modelValue || placeholderIcon === ''" icon="times" class="h-icon-sm hover:cursor-pointer hover:text-destructive-icon" @click="clear" />
-      <fa v-else :icon="placeholderIcon" class="h-icon-sm" />
+      <FontAwesomeIcon v-if="modelValue || placeholderIcon === ''" icon="times" class="h-icon-sm hover:cursor-pointer hover:text-destructive-icon" @click="clear" />
+      <FontAwesomeIcon v-else :icon="placeholderIcon" class="h-icon-sm" />
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref } from 'vue';
+import { defineComponent, PropType, ref } from 'vue';
+import FontAwesomeIcon from '@/foundation/components/FontAwesomeIcon/FontAwesomeIcon.vue';
 
 export default defineComponent({
+  components: {
+    FontAwesomeIcon
+  },
   props: {
     modelValue: {
       type: [String, Number],
