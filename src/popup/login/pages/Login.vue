@@ -45,14 +45,14 @@
 
 <script lang="ts">
 import { computed, defineComponent, PropType, ref, watch } from 'vue';
-import PageLayout from '@/foundation/components/PageLayout.vue';
-import { useInjectStore } from '@/useInjectStore';
-import { close } from '@/Toolbar/close';
-import InputField from '@/foundation/components/InputField.vue';
+import PageLayout from '@/components/PageLayout.vue';
+import { useInjectStore } from '@/composables/useInjectStore';
+import { close } from '@@/Toolbar/close';
+import InputField from '@/components/InputField.vue';
 import PasswordInputField from '@/components/PasswordInputField.vue';
-import Divider from '@/foundation/components/Divider.vue';
-import Toolbar from '@/Toolbar/Toolbar.vue';
-import FontAwesomeIcon from '@/foundation/components/FontAwesomeIcon/FontAwesomeIcon.vue';
+import Divider from '@/components/Divider.vue';
+import Toolbar from '@@/Toolbar/Toolbar.vue';
+import FontAwesomeIcon from '@/components/FontAwesomeIcon/FontAwesomeIcon.vue';
 
 export default defineComponent({
   components: {

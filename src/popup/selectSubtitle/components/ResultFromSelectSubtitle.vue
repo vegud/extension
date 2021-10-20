@@ -23,11 +23,10 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onUnmounted } from 'vue';
-import { capitalizeFirst } from '@/util/string';
-import SuffixIconButton from '@/foundation/components/SuffixIconButton.vue';
-import FontAwesomeIcon from '@/foundation/components/FontAwesomeIcon/FontAwesomeIcon.vue';
-import { useInjectStore } from '@/useInjectStore';
+import { defineComponent, onUnmounted } from 'vue';
+import SuffixIconButton from '@/components/SuffixIconButton.vue';
+import FontAwesomeIcon from '@/components/FontAwesomeIcon/FontAwesomeIcon.vue';
+import { useInjectStore } from '@/composables/useInjectStore';
 
 export default defineComponent({
   components: {
@@ -36,7 +35,6 @@ export default defineComponent({
   },
   setup() {
     const appStore = useInjectStore('appStore');
-    const fileStore = useInjectStore('fileStore');
     const subtitleStore = useInjectStore('subtitleStore');
     const videoStore = useInjectStore('videoStore');
 
@@ -48,13 +46,11 @@ export default defineComponent({
       appState: appStore.state,
       remove: () => {
         appStore.actions.reset();
-        fileStore.actions.reset();
         subtitleStore.actions.reset();
         videoStore.actions.removeCurrent();
       },
       highlightCurrentVideo: () => videoStore.actions.highlight({ video: videoStore.getters.current.value }),
-      removeHighlightFromVideo: videoStore.actions.removeHighlight,
-      infoTooltip: computed(() => [`filename - ${fileStore.state.value.filename}`, `state - ${capitalizeFirst(appStore.state.value.state)}`].join('\n'))
+      removeHighlightFromVideo: videoStore.actions.removeHighlight
     };
   }
 });

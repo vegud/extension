@@ -1,7 +1,7 @@
 import { get as storageGet, remove as storageRemove } from 'storage';
-import { init as initLoginStore } from '@/login/store';
+import { init as initLoginStore } from '@@/login/store';
 import { provide, watch } from 'vue';
-import { init as initSelectStore } from '@/selectSubtitle/store';
+import { init as initSelectStore } from '@@/selectSubtitle/store';
 import { init as initSubtitleStore } from '@/subtitle/store';
 import { init as initAppStore } from '@/app/store';
 import { init as initContentScriptStore } from '@/contentScript/store';

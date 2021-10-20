@@ -25,12 +25,12 @@
 import { computed, defineComponent, PropType, ref } from 'vue';
 import Duration from 'luxon/src/duration.js';
 
-import PageLayout from '@/foundation/components/PageLayout.vue';
-import LoadingBar from '@/foundation/components/LoadingBar.vue';
-import FontAwesomeIcon from '@/foundation/components/FontAwesomeIcon/FontAwesomeIcon.vue';
+import PageLayout from '@/components/PageLayout.vue';
+import LoadingBar from '@/components/LoadingBar.vue';
+import FontAwesomeIcon from '@/components/FontAwesomeIcon/FontAwesomeIcon.vue';
 import TranscriptContent from '@/subtitle/components/TranscriptContent.vue';
-import { useInjectStore } from '@/useInjectStore';
-import Toolbar from '@/Toolbar/Toolbar.vue';
+import { useInjectStore } from '@/composables/useInjectStore';
+import Toolbar from '@@/Toolbar/Toolbar.vue';
 
 export default defineComponent({
   components: {

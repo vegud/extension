@@ -10,7 +10,7 @@
   </div>
 </template>
 <script>
-import FontAwesomeIcon from '@/foundation/components/FontAwesomeIcon/FontAwesomeIcon.vue';
+import FontAwesomeIcon from '@/components/FontAwesomeIcon/FontAwesomeIcon.vue';
 export default {
   components: { FontAwesomeIcon }
 }

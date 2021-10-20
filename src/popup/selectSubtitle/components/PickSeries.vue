@@ -25,10 +25,10 @@
 
 <script lang="ts">
 import { computed, defineComponent, onMounted, PropType, ref, watch } from 'vue';
-import LanguageSelect from '@/foundation/components/LanguageSelect/LanguageSelect.vue';
-import TitleSelect from '@/selectSubtitle/components/TitleSelect.vue';
-import EpisodeSelect from '@/selectSubtitle/components/EpisodeSelect.vue';
-import { Entry, Language } from '@/selectSubtitle/pages/selectSubtitleTypes';
+import LanguageSelect from '@/components/LanguageSelect/LanguageSelect.vue';
+import TitleSelect from '@@/selectSubtitle/components/TitleSelect.vue';
+import EpisodeSelect from '@@/selectSubtitle/components/EpisodeSelect.vue';
+import { Entry, Language } from '@@/selectSubtitle/pages/selectSubtitleTypes';
 import { groupBy, episodeComparator } from './fn';
 import { set as storageSet } from 'storage';
 

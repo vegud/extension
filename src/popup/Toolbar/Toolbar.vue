@@ -21,13 +21,13 @@
 
 <script lang="ts">
 import { defineComponent, PropType, ref } from 'vue';
-import { useDraggableArea } from '@/foundation/composables';
+import { useDraggableArea } from '@/composables';
+import { useInjectStore } from '@/composables/useInjectStore';
 import Logo from './Logo.vue';
-import FontAwesomeIcon from '@/foundation/components/FontAwesomeIcon/FontAwesomeIcon.vue';
+import FontAwesomeIcon from '@/components/FontAwesomeIcon/FontAwesomeIcon.vue';
 
 import { close } from './close';
-import logo from '@/res/plussub128.png';
-import { useInjectStore } from '@/useInjectStore';
+import logo from '@@/res/plussub128.png';
 
 export default defineComponent({
   components: {

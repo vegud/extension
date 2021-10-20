@@ -40,17 +40,17 @@
 </template>
 
 <script lang="ts">
-import PageLayout from '@/foundation/components/PageLayout.vue';
+import PageLayout from '@/components/PageLayout.vue';
 import { computed, defineComponent, onMounted, PropType, ref, watch } from 'vue';
-import { useInjectStore } from '@/useInjectStore';
-import PickSeries from '@/selectSubtitle/components/PickSeries.vue';
-import DetectSubtitle from '@/selectSubtitle/components/DetectSubtitle.vue';
-import PrefixIconButton from '@/foundation/components/PrefixIconButton.vue';
-import FontAwesomeIcon from '@/foundation/components/FontAwesomeIcon/FontAwesomeIcon.vue';
+import { useInjectStore } from '@/composables/useInjectStore';
+import PickSeries from '@@/selectSubtitle/components/PickSeries.vue';
+import DetectSubtitle from '@@/selectSubtitle/components/DetectSubtitle.vue';
+import PrefixIconButton from '@/components/PrefixIconButton.vue';
+import FontAwesomeIcon from '@/components/FontAwesomeIcon/FontAwesomeIcon.vue';
 import { get as storageGet, set as storageSet } from 'storage';
-import LoadingBar from '@/foundation/components/LoadingBar.vue';
-import Toolbar from '@/Toolbar/Toolbar.vue';
-import { Entry } from '@/selectSubtitle/pages/selectSubtitleTypes';
+import LoadingBar from '@/components/LoadingBar.vue';
+import Toolbar from '@@/Toolbar/Toolbar.vue';
+import { Entry } from '@@/selectSubtitle/pages/selectSubtitleTypes';
 
 const sort = (arr, comp) => [...arr].sort(comp);
 const storageGetOrDefault = async (key, defaultValue) => {

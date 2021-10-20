@@ -20,7 +20,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
-import Select from '@/foundation/components/Select.vue';
+import Select from '@/components/Select.vue';
 
 interface Entry {
   provider: string;

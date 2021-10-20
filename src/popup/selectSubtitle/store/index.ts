@@ -1,4 +1,4 @@
-import { LoginStore } from '@/login/store';
+import { Store } from 'storeTypes';
 
 export interface SelectSubtitleStore {
   actions: {
@@ -8,7 +8,7 @@ export interface SelectSubtitleStore {
 }
 
 
-export const init = ({ loginStore }: { loginStore: LoginStore }): SelectSubtitleStore => {
+export const init = ({ loginStore }: { loginStore: Store<'loginStore'> }): SelectSubtitleStore => {
   return {
     actions: {
       list: async () => {

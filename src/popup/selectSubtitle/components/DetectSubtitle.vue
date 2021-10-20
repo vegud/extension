@@ -18,8 +18,8 @@
 
 <script lang="ts">
 import { computed, defineComponent, PropType, ref } from 'vue';
-import LanguageSelect from '@/foundation/components/LanguageSelect/LanguageSelect.vue';
-import { Entry, Language } from '@/selectSubtitle/pages/selectSubtitleTypes';
+import LanguageSelect from '@/components/LanguageSelect/LanguageSelect.vue';
+import { Entry, Language } from '@@/selectSubtitle/pages/selectSubtitleTypes';
 import {groupBy, episodeComparator} from './fn';
 
 export default defineComponent({

@@ -1,10 +1,10 @@
 import {computed, ComputedRef, ref} from 'vue';
-import Transcript from "@/subtitle/pages/Transcript.vue";
-import Settings from "@/settings/pages/Settings.vue";
-import SelectSubtitle from "@/selectSubtitle/pages/SelectSubtitle.vue";
-import Login from "@/login/pages/Login.vue";
-import Home from "@/home/pages/Home.vue";
-import Tutorial from "@/tutorial/pages/Tutorial.vue";
+import Transcript from "@@/subtitle/pages/Transcript.vue";
+import Settings from "@@/settings/pages/Settings.vue";
+import SelectSubtitle from "@@/selectSubtitle/pages/SelectSubtitle.vue";
+import Login from "@@/login/pages/Login.vue";
+import Home from "@@/home/pages/Home.vue";
+import Tutorial from "@@/tutorial/pages/Tutorial.vue";
 
 export type NavigationState = {
   name: 'HOME' | 'SETTINGS' | 'TRANSCRIPT' | 'SELECT_SUBTITLE' | 'LOGIN' | 'TUTORIAL';

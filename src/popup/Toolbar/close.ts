@@ -1,4 +1,4 @@
-import { useApp } from '@/index';
+import { useApp } from '@@/index';
 
 export const close = (): void => {
   const app = useApp();

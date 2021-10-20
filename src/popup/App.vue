@@ -10,22 +10,20 @@ import { computed, defineComponent, onUnmounted, PropType, provide, watch } from
 import { init as initAppStore } from '@/app/store';
 import { init as initContentScriptStore } from '@/contentScript/store';
 import { init as initVideoStore } from '@/video/store';
-import { init as initFileStore } from '@/file/store';
 import { init as initSubtitleStore } from '@/subtitle/store';
-import { init as initNavigationStore } from '@/navigation/store';
-import { init as initSelectStore } from '@/selectSubtitle/store';
+import { init as initNavigationStore } from '@@/navigation/store';
+import { init as initSelectStore } from '@@/selectSubtitle/store';
 import { init as initAppearanceStore } from '@/appearance/store';
-import { init as initLoginStore } from '@/login/store';
-import { init as initTutorialStore } from '@/tutorial/store';
+import { init as initLoginStore } from '@@/login/store';
+import { init as initTutorialStore } from '@@/tutorial/store';
 
-import Home from '@/home/pages/Home.vue';
-import Loading from '@/loading/pages/Loading.vue';
-import Transcript from '@/subtitle/pages/Transcript.vue';
-import Settings from '@/settings/pages/Settings.vue';
-import '@/styles.css';
-import { filter, takeUntil, tap } from 'rxjs/operators';
+import Home from '@@/home/pages/Home.vue';
+import Loading from '@@/loading/pages/Loading.vue';
+import Transcript from '@@/subtitle/pages/Transcript.vue';
+import Settings from '@@/settings/pages/Settings.vue';
+import '@@/styles.css';
 import { Subject } from 'rxjs';
-import { close } from '@/Toolbar/close';
+import { close } from '@@/Toolbar/close';
 
 export default defineComponent({
   components: {
@@ -60,8 +58,6 @@ export default defineComponent({
     provide('appearanceStore', appearanceStore);
     const videoStore = initVideoStore({ use: { contentScriptStore, appearanceStore } });
     provide('videoStore', videoStore);
-    const fileStore = initFileStore();
-    provide('fileStore', fileStore);
     const tutorialStore = initTutorialStore();
     provide('tutorialStore', tutorialStore);
 
@@ -71,7 +67,6 @@ export default defineComponent({
       // @ts-ignore
       if (e.target?.id === 'progress') {
         appStore.actions.reset();
-        fileStore.actions.reset();
         subtitleStore.actions.reset();
         videoStore.actions.removeCurrent();
       }
@@ -94,7 +89,6 @@ export default defineComponent({
         if (video === null) {
           appStore.actions.reset();
           subtitleStore.actions.reset();
-          fileStore.actions.reset();
         }
       }
     );
@@ -113,7 +107,7 @@ export default defineComponent({
 
     onUnmounted(() => unmountSubject.next(undefined));
 
-    const initialized = computed(() => loginStore.getters.initialized && tutorialStore.getters.initialized);
+    const initialized = computed(() => loginStore.getters.initialized.value && tutorialStore.getters.initialized.value);
 
     watch(
       [initialized, loginStore.getters.login, tutorialStore.getters.watched, videoStore.getters.count, appStore.state, videoStore.getters.list, videoStore.getters.current],

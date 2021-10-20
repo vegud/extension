@@ -19,7 +19,7 @@
           </template>
         </ResultFromSelectSubtitle>
 
-        <PageVideos v-else-if="current === 'page-videos'" class="w-full" />
+        <PageVideos v-else-if="current === 'page-videos'" class="w-full" :select-fn='toSelectSubtitle' />
         <div v-else-if="current === 'unknown'">
           unknown
         </div>
@@ -32,14 +32,14 @@
 <script lang="ts">
 import { computed, defineComponent, PropType } from 'vue';
 
-import PageLayout from '@/foundation/components/PageLayout.vue';
-import ResultFromSelectSubtitle from '@/selectSubtitle/components/ResultFromSelectSubtitle.vue';
+import PageLayout from '@/components/PageLayout.vue';
+import ResultFromSelectSubtitle from '@@/selectSubtitle/components/ResultFromSelectSubtitle.vue';
 import PageVideos from '@/video/components/PageVideos.vue';
 import Settings from '@/subtitle/components/Settings.vue';
-import { useInjectStore } from '@/useInjectStore';
-import Mention from "@/home/components/Mention.vue";
-import FontAwesomeIcon from '@/foundation/components/FontAwesomeIcon/FontAwesomeIcon.vue';
-import Toolbar from '@/Toolbar/Toolbar.vue';
+import { useInjectStore } from '@/composables/useInjectStore';
+import Mention from "@@/home/components/Mention.vue";
+import FontAwesomeIcon from '@/components/FontAwesomeIcon/FontAwesomeIcon.vue';
+import Toolbar from '@@/Toolbar/Toolbar.vue';
 
 export default defineComponent({
   components: {
@@ -61,10 +61,12 @@ export default defineComponent({
   setup() {
     const appStore = useInjectStore('appStore');
     const loginStore = useInjectStore('loginStore');
+    const navigationStore = useInjectStore('navigationStore');
 
     return {
       appState: appStore.state,
       signOut: loginStore.actions.signOut,
+      toSelectSubtitle: navigationStore.actions.toSelectSubtitle,
       current: computed(() => {
         if (appStore.state.value.state !== 'NONE' && appStore.state.value.src === 'SEARCH') {
           return 'select-card';

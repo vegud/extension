@@ -44,9 +44,9 @@
 
 <script lang="ts">
 import { defineComponent, PropType, ref } from 'vue';
-import PageLayout from '@/foundation/components/PageLayout.vue';
-import Toolbar from '@/Toolbar/Toolbar.vue';
-import { useInjectStore } from '@/useInjectStore';
+import PageLayout from '@/components/PageLayout.vue';
+import Toolbar from '@@/Toolbar/Toolbar.vue';
+import { useInjectStore } from '@/composables/useInjectStore';
 
 export default defineComponent({
   components: {
