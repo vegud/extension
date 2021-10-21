@@ -32,16 +32,6 @@ export default defineComponent({
     Transcript,
     Settings
   },
-  props: {
-    preferredLanguage: {
-      type: String as PropType<string>,
-      required: true
-    },
-    style: {
-      type: Object as PropType<Record<string, string>>,
-      required: true
-    }
-  },
   setup(props) {
     const appStore = initAppStore();
     provide('appStore', appStore);
@@ -54,7 +44,7 @@ export default defineComponent({
     const subtitleStore = initSubtitleStore({ use: { appStore } });
     provide('subtitleStore', subtitleStore);
     const contentScriptStore = initContentScriptStore();
-    const appearanceStore = initAppearanceStore({ use: { contentScriptStore }, initStyle: props.style });
+    const appearanceStore = initAppearanceStore({ use: { contentScriptStore }});
     provide('appearanceStore', appearanceStore);
     const videoStore = initVideoStore({ use: { contentScriptStore, appearanceStore } });
     provide('videoStore', videoStore);

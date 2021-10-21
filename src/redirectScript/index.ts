@@ -34,7 +34,7 @@ export interface Entry {
   const subtitleStore = initSubtitleStore({ use: { appStore } });
   const contentScriptStore = initContentScriptStore();
 
-  const appearanceStore = initAppearanceStore({ use: { contentScriptStore }, initStyle: style ?? {} });
+  const appearanceStore = initAppearanceStore({ use: { contentScriptStore }});
   const videoStore = initVideoStore({ use: { contentScriptStore, appearanceStore } });
 
   contentScriptStore.actions.requestAllContentScriptsToRegister();
