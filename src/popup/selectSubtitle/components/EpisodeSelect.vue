@@ -43,7 +43,7 @@ export default defineComponent({
     labels: {
       type: Array as PropType<string[]>,
       required: false,
-      default: []
+      default: () => []
     }
   },
   emits: ['update:selected', 'update:show'],

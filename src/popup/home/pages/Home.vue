@@ -19,7 +19,7 @@
           </template>
         </ResultFromSelectSubtitle>
 
-        <PageVideos v-else-if="current === 'page-videos'" class="w-full" :select-fn='toSelectSubtitle' />
+        <PageVideos v-else-if="current === 'page-videos'" class="w-full" :select-fn="toSelectSubtitle" />
         <div v-else-if="current === 'unknown'">
           unknown
         </div>
@@ -66,7 +66,7 @@ export default defineComponent({
     return {
       appState: appStore.state,
       signOut: loginStore.actions.signOut,
-      toSelectSubtitle: navigationStore.actions.toSelectSubtitle,
+      toSelectSubtitle: () => navigationStore.actions.toSelectSubtitle(),
       current: computed(() => {
         if (appStore.state.value.state !== 'NONE' && appStore.state.value.src === 'SEARCH') {
           return 'select-card';
