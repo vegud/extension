@@ -53,15 +53,8 @@ export default (env) => {
       alias: {
         '@': resolve('src/popup/foundation'),
         '@@': resolve('src/popup'),
-        // spin-off specifics
         storeTypes: resolve(`src/popup/storeTypes/index.ts`),
-        // It seems the problem has been solve. https://github.com/vuejs/vue-cli/pull/5788
-        // this isn't technically needed, since the default `vue` entry for bundlers
-        // is a simple `export * from '@vue/runtime-dom`. However having this
-        // extra re-export somehow causes webpack to always invalidate the module
-        // on the first HMR update and causes the page to reload.
-        // vue: '@vue/runtime-dom',
-        storage: resolve(`src/popup/platform/storage/${browser}/index.ts`),
+        storage: resolve(`src/popup/foundation/platform/storage/${browser}/index.ts`),
         monkeyPatchApollo: resolve(`src/popup/platform/monkeyPatchApollo/${browser}/index.ts`),
         onPageActionClicked: resolve(`src/background/platform/onPageActionClicked/${browser}/index.ts`)
       }
@@ -172,6 +165,9 @@ export default (env) => {
           getFoundationFiles('appearance/components', (e) => addPopupFoundationFile(e));
           getFoundationFiles('appearance/store', (e) => addPopupFoundationFile(e));
 
+          getFoundationFiles('platform/storage/chrome', (e) => addPopupFoundationFile(e));
+          getFoundationFiles('platform/storage/firefox', (e) => addPopupFoundationFile(e));
+
           getFoundationFiles('subtitle/components', (e) => addPopupFoundationFile(e));
           getFoundationFiles('subtitle/store', (e) => addPopupFoundationFile(e));
           getFoundationFiles('subtitle/util', (e) => addPopupFoundationFile(e));
@@ -196,7 +192,8 @@ export default (env) => {
           { from: 'res', to: 'res' },
           { from: 'popup/font.css', to: 'font.css' },
           { from: '../node_modules/@plussub/extension/dist-chrome/contentScript.css', to: 'contentScript.css' },
-          { from: '../node_modules/@plussub/extension/dist-chrome/contentScript.js', to: 'contentScript.js' }
+          { from: '../node_modules/@plussub/extension/dist-chrome/contentScript.js', to: 'contentScript.js' },
+          { from: '../node_modules/@plussub/extension/dist-chrome/cssContentScript.js', to: 'cssContentScript.js' }
         ]
       }),
       new webpack.DefinePlugin({
